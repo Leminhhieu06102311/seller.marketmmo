@@ -10,6 +10,7 @@ import { IoIosSearch } from 'react-icons/io'
 import { AiFillDashboard } from 'react-icons/ai'
 import { FaCartShopping } from 'react-icons/fa6'
 import { FiMenu } from 'react-icons/fi'
+import 'animate.css';
 const inter = Inter({ subsets: ['latin'] })
 
 // export const metadata: Metadata = {

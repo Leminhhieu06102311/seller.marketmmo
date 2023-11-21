@@ -1,5 +1,5 @@
 "use client";
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
 import { IoFilterOutline } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -18,15 +18,10 @@ export default function Order() {
     //
     return (
         <div className="p-6 max-w-[1536px] w-full m-auto">
-            <div className="flex justify-between items-center mb-3">
-                <h1 className="font-bold text-lg">Quản lý đơn hàng</h1>
-            </div>
+            <h1 className="text-xl font-bold mb-4">Quản lí sản phẩm</h1>
             <div>
                 <div className="flex justify-between items-center bg-white  px-6 rounded-t-xl h-[96px]">
                     <div className="flex items-center gap-x-3">
-                        <p className="leading-5 font-semibold lg:m-0 text-black text-sm">
-                            1234 đơn hàng
-                        </p>
                         <div className="flex items-center bg-white border px-3 py-4 rounded-lg hover:border-primary transition duration-300 w-[250px]">
                             <IoIosSearch className="text-lg mr-2 text-gray-400 flex-shrink-0" />
                             <input
@@ -37,6 +32,9 @@ export default function Order() {
                         </div>
                     </div>
                     <div className="flex items-center gap-x-2">
+                        <p className="leading-5 font-semibold lg:m-0 text-black text-sm">
+                            1234 đơn hàng
+                        </p>
                         <div className="p-2">
                             <IoFilterOutline />
                         </div>
@@ -73,7 +71,7 @@ export default function Order() {
                                 <td className="p-4 whitespace-nowrap text-sm">16/07/2023 11:45:02</td>
                                 <td className="p-4 whitespace-nowrap text-sm font-semibold">20.000VND</td>
                                 <th className="text-start p-4 relative">
-                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
                                         <CiEdit />
                                     </button>
                                     <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
@@ -84,6 +82,50 @@ export default function Order() {
 
                         </tbody>
                     </table>
+                    {modals.includes('modal1') && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <div className="fixed inset-0 flex items-center justify-center z-50">
+                                    <div className="fixed inset-0 bg-[#0a1e4266] opacity-50" onClick={() => closeModal('modal1')}></div>
+                                    <div className="bg-white p-4 z-50 w-full h-full md:h-auto  md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528" >
+                                        <div className=" w-full flex justify-between mb-5">
+                                            <h2 className='font-semibold text-xl'>Chỉnh sửa sản phẩm</h2>
+                                            <button onClick={() => closeModal('modal1')}> <IoMdClose className="text-2xl text-gray-200" /></button>
+                                        </div>
+                                        <div>
+                                            <div className="flex flex-col mb-2">
+                                                <label className="text-sm font-semibold">Tên sản phẩm phẩm:</label>
+                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg focus:outline-primary" />
+                                            </div>
+                                            <div className="flex flex-col mb-2">
+                                                <label className="text-sm font-semibold">Số lượng:</label>
+                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg focus:outline-primary" />
+                                            </div >
+                                            <div className="flex flex-col mb-2">
+                                                <label className="text-sm font-semibold">Giá:</label>
+                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg focus:outline-primary" />
+                                            </div>
+                                            <div className="mb-2">
+                                                <label className="text-sm font-semibold">Ảnh:</label>
+                                                <label className="block mt-1">
+                                                    <span className="sr-only">Choose profile photo</span>
+                                                    <input type="file" className="block w-full text-sm text-gray-500 file:me-4 file:py-2 focus:outline-primary file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:opacity-50 file:disabled:pointer-events-none dark:file:bg-blue-500 dark:hover:file:bg-blue-400 " /> </label>
+                                            </div>
+                                            <div className="flex flex-col mb-2">
+                                                <label className="text-sm font-semibold">Mô tả:</label>
+                                                <textarea name="" id="" className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
+                                            </div>
+                                            <div className="flex justify-end">
+                                                <button onClick={() => closeModal('modal1')} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
+                                                <button className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2">Lưu</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                    }
                 </div>
                 <div className="rounded-b-xl overflow-hidden">
                     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">

@@ -132,7 +132,6 @@ export default function managerProduct() {
         <div className="p-6 max-w-[1536px] w-full m-auto">
             <h1 className="text-xl font-bold mb-4">Quản lí sản phẩm</h1>
             <div className="mx-auto  shadow-lg rounded-xl">
-
                 <ul className="flex px-6 py-4 bg-white rounded-t-xl overflow-hidden">
                     {tabs.map((tab, index) => (
                         <li
