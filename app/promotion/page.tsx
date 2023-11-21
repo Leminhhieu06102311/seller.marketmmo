@@ -5,7 +5,7 @@ export default function Promotion() {
   const tabs = [
     {
       label: 'Tất cả', content:
-        <div className='sm:block md:flex lg:flex justify-around bg-white pb-7 px-4 rounded-b-xl'>
+        <div className='sm:block md:flex lg:flex justify-around px-4 rounded-b-xl'>
           <div className='flex p-4 w-full lg:md:w-full lg:w-full border justify-between rounded-lg '>
             <div className='flex flex-col '>
               <h3 className='text-sm font-semibold'>Doanh thu</h3>
@@ -61,31 +61,33 @@ export default function Promotion() {
     <div className='p-6 max-w-[1536px] w-full m-auto'>
       <h1 className="text-xl font-bold w-[99%]">Quản lí sản phẩm</h1>
       <div className='px-6 py-4'>
-        <div className='flex px-6  flex-col md:flex-row lg:flex-row py-4 items-center justify-start md:justify-between lg:justify-between bg-white rounded-t-xl overflow-hidden'>
-          <h2 className='font-bold inline-block whitespace-nowrap'>Dữ liệu khuyến mãi bán hàng</h2>
-          <ul className="flex bg-white rounded-t-xl overflow-hidden w-full justify-center md:justify-end lg:justify-end">
+        <div className='px-6 py-4 bg-white mb-5 rounded-xl shadow-lg'>
+          <div className='flex flex-col md:flex-row lg:flex-row py-4 items-center justify-start md:justify-between lg:justify-between rounded-t-xl overflow-hidden'>
+            <h2 className='font-bold inline-block whitespace-nowrap'>Dữ liệu khuyến mãi bán hàng</h2>
+            <ul className="flex bg-white rounded-t-xl overflow-hidden w-full justify-center md:justify-end lg:justify-end">
+              {tabs.map((tab, index) => (
+                <li
+                  key={index}
+                  onClick={() => showTab(index)}
+                  className="cursor-pointer px-4 py-1 transition-all duration-300"
+                  style={{
+                    borderBottom: index === activeTab ? '3px solid #3861fb' : '3px solid #ffff',
+                  }}
+                >
+                  <label className="text-sm cursor-pointer font-semibold">{tab.label}</label>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className='mb-5'>
             {tabs.map((tab, index) => (
-              <li
-                key={index}
-                onClick={() => showTab(index)}
-                className="cursor-pointer px-4 py-1 transition-all duration-300"
-                style={{
-                  borderBottom: index === activeTab ? '3px solid #3861fb' : '3px solid #ffff',
-                }}
-              >
-                <label className="text-sm cursor-pointer font-semibold">{tab.label}</label>
-              </li>
+              <div key={index} className={`${index === activeTab ? 'block overflow-x-auto' : 'hidden'}`}>
+                {tab.content}
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
-        <div className='mb-5'>
-          {tabs.map((tab, index) => (
-            <div key={index} className={`${index === activeTab ? 'block overflow-x-auto' : 'hidden'}`}>
-              {tab.content}
-            </div>
-          ))}
-        </div>
-        <div className='bg-white rounded-lg px-6 py-4'>
+        <div className='bg-white rounded-lg px-6 py-4 shadow-lg'>
           <h1 className='text-lg font-semibold'>Công cụ quảng cáo</h1>
           <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-2 md:gap-5 lg:gap-10 items-start'>
             <div className='h-full'>
