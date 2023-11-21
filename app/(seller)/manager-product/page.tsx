@@ -1,9 +1,9 @@
 "use client"
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState,useEffect } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { IoIosSearch, IoMdClose } from "react-icons/io";
-import { IoFilterOutline } from "react-icons/io5";
+
 import { MdAdd } from "react-icons/md";
 export default function managerProduct() {
     const [modals, setModals] = useState<string[]>([]);
