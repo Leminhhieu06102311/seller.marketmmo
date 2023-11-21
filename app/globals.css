@@ -2,26 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+html {
+  font-family: 'Inter', sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.base-text {
+  @apply text-xs text-slate-900 font-bold
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.dropdown-boxshadown {
+  box-shadow: rgba(128, 138, 157, 0.12) 0px 1px 2px, rgba(128, 138, 157, 0.24) 0px 8px 32px;
+}
+
+.swiper-pagination>.swiper-pagination-bullet {
+  top: 130px;
+}
+
+.box-shadow {
+  box-shadow: rgba(88, 102, 126, 0.08) 0px 4px 24px, rgba(88, 102, 126, 0.01) 0px 1px 2px;
+}
+
+.box-shadow-product {
+  box-shadow: rgba(88, 102, 126, 0.12) 0px 1px 2px 0px, rgba(88, 102, 126, 0.08) 0px 4px 24px
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 100%;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: none;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #cfd6e4;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #cfd6e4;
+}
+
+/* Ẩn nút hiển thị mật khẩu */
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+
+/* Firefox */
+input[type="password"] {
+  /* Ẩn biểu tượng mắt trong Firefox */
+  -moz-appearance: none;
+}
+
+/* Microsoft Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
 }
