@@ -1,0 +1,4 @@
+export enum ENUM_NAME_MODAL {
+    ADD_PRODUCT = "ADD_PRODUCT",
+    EDIT_PRODUCT = "EDIT_PRODUCT"
+  }

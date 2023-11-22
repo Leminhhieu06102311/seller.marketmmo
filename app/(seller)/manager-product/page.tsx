@@ -2,18 +2,61 @@
 import { SetStateAction, useState,useEffect } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
-import { IoIosSearch, IoMdClose } from "react-icons/io";
-
+import { IoIosSearch } from "react-icons/io";
+import Cookies from 'js-cookie'
 import { MdAdd } from "react-icons/md";
+import { deleteProduct, getAllProducts } from "@/services/product";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {Product} from "@/interfaces/product";
+import { toast } from "react-toastify";
+import { showModal } from "@/redux/modalSlice";
+import { ENUM_NAME_MODAL } from "@/enum/name_modal";
+import { formatCurrencyVND } from "@/utils/format_vnd";
+import AddProduct from "./AddProduct";
+import { useRouter } from "next/navigation";
+import EditProduct from "./EditProduct";
 export default function managerProduct() {
-    const [modals, setModals] = useState<string[]>([]);
-    const openModal = (modalId: string) => {
-        setModals([...modals, modalId]);
+    const {id} = useAppSelector((state) => state.user)
+    const dispatch = useAppDispatch()
+    const [page, setPage] = useState(1)
+    const [products, setProducts] = useState<Product[]>()
+    const token = Cookies.get('access_token')
+    const [activeTab, setActiveTab] = useState(0);
+    const [productId, setProductId] = useState('')
+    const showTab = (index: SetStateAction<number>) => {
+        setActiveTab(index);
     };
-
-    const closeModal = (modalId: string) => {
-        setModals(modals.filter((id) => id !== modalId));
-    };
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const data = await getAllProducts(id,page)
+            setProducts(data)
+        }
+        fetchProducts()
+    },[page])
+    const hanldeDelete = async (idProduct : string) => {
+        toast.promise(deleteProduct(idProduct,token),{
+            pending: {
+                render: () => {
+                    return <div>Đang xóa sản phẩm</div>
+                }
+            },
+            success: {
+                render: () => {
+                    setProducts(products?.filter((item) => item._id !== idProduct))
+                    return <div>Xoá sản phẩm thành công</div>
+                }
+            },
+            error: {
+                render: () => {
+                    return <div>Lỗi khi xóa sản phẩm. Thử lại sau!</div>
+                }
+            }
+        })
+    }
+    const hanldeEdit = (productId : string) => {
+        setProductId(productId)
+        dispatch(showModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
+    }
     const tabs = [
         {
             label: 'Tất cả', content:
@@ -21,91 +64,40 @@ export default function managerProduct() {
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
                             <tr className="border-t">
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Mã sản phẩm</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Tên sản phẩm</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Số lượng</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Giá</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Xét duyệt</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Số lượng</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Đã bán</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Danh mục</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="bg-white border-t hover:bg-gray-50">
-                                <td className="p-4 whitespace-nowrap text-sm">655b59757e87bab1ae8fc25d</td>
-                                <td className="p-4 whitespace-nowrap md:sticky">AJDIEHEHGFLASLKDJJASKDAS</td>
-                                <td className="p-4 whitespace-nowrap text-sm">3</td>
-                                <td className="p-4 whitespace-nowrap text-sm">20000đ</td>
-                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="text-xs px-2 py-1 border border-[red] rounded-md bg-red-50 text-[red] text-center">Đang chờ</span> </td>
+                           {products && products.map((product) => {
+                            return (
+                                <tr key={product._id} className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4 whitespace-nowrap text-sm">{product.name}</td>
+                                <td className="p-4 whitespace-nowrap md:sticky">{formatCurrencyVND(product.price)}</td>
+                                <td className="p-4 whitespace-nowrap text-sm">{product.quantity}</td>
+                                <td className="p-4 whitespace-nowrap text-sm">{product.numberHasSeller}</td>
+                                <td className="p-4 whitespace-nowrap text-sm font-semibold">
+                                    <span className="text-xs px-2 py-1 border border-[red] rounded-md bg-red-50 text-[red] text-center">{product.categories.name}</span> 
+                                </td>
                                 <th className="text-start p-4 relative">
-                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                    <button onClick={() => hanldeEdit(product._id)} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
                                         <CiEdit />
                                     </button>
-                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red]" onClick={() => hanldeDelete(product._id)}>
                                         <MdDeleteForever />
                                     </button>
                                 </th>
                             </tr>
-                            <tr className="bg-white border-t hover:bg-gray-50">
-                                <td className="p-4 whitespace-nowrap text-sm">655b59757e87bab1ae8fc25d</td>
-                                <td className="p-4 whitespace-nowrap md:sticky">AJDIEHEHGFLASLKDJJASKDAS</td>
-                                <td className="p-4 whitespace-nowrap text-sm">3</td>
-                                <td className="p-4 whitespace-nowrap text-sm">20000đ</td>
-                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="text-xs px-2 py-1 border border-[green] rounded-md bg-green-50 text-[green] text-center">Đã duyệt</span> </td>
-                                <th className="text-start p-4 relative">
-                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
-                                        <CiEdit />
-                                    </button>
-                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
-                                        <MdDeleteForever />
-                                    </button>
-                                </th>
-                            </tr>
+                            
+                            )
+                            })}
                         </tbody>
                     </table>
-                    {modals.includes('modal1') && (
-                        <div className="modal">
-                            <div className="modal-content">
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="fixed inset-0 bg-[#0a1e4266] opacity-50" onClick={() => closeModal('modal1')}></div>
-                                    <div className="bg-white p-4 z-50 w-full h-full md:h-auto  md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528" >
-                                        <div className=" w-full flex justify-between mb-5">
-                                            <h2 className='font-semibold text-xl'>Chỉnh sửa sản phẩm</h2>
-                                            <button onClick={() => closeModal('modal1')}> <IoMdClose className="text-2xl text-gray-200" /></button>
-                                        </div>
-                                        <div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Tên sản phẩm phẩm:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                            </div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Số lượng:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                            </div >
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Giá:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="text-sm font-semibold">Ảnh:</label>
-                                                <label className="block mt-1">
-                                                    <span className="sr-only">Choose profile photo</span>
-                                                    <input type="file" className="block w-full text-sm text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:opacity-50 file:disabled:pointer-events-none dark:file:bg-blue-500 dark:hover:file:bg-blue-400 " /> </label>
-                                            </div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Mô tả:</label>
-                                                <textarea name="" id="" className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
-                                            </div>
-                                            <div className="flex justify-end">
-                                                <button onClick={() => closeModal('modal1')} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
-                                                <button className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2">Lưu</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                    }
+                            {productId && <EditProduct products={products} setProducts={setProducts} productId={productId} />}
                 </div >
         },
         {
@@ -122,11 +114,7 @@ export default function managerProduct() {
         },
     ];
 
-    const [activeTab, setActiveTab] = useState(0);
-
-    const showTab = (index: SetStateAction<number>) => {
-        setActiveTab(index);
-    };
+    
 
     return (
         <div className="p-6 max-w-[1536px] w-full m-auto">
@@ -154,55 +142,12 @@ export default function managerProduct() {
                         <IoIosSearch className="text-lg mr-2 text-gray-400 flex-shrink-0" />
                         <input type="text" placeholder="Search..." className="bg-transparent focus:outline-none w-full" />
                     </div>
-                    <button onClick={() => openModal('modal2')} className="p-2 flex justify-center items-center bg-primary rounded-lg shadow-md text-white font-semibold text-sm">
+                    <button onClick={() => dispatch(showModal(ENUM_NAME_MODAL.ADD_PRODUCT))} className="p-2 flex justify-center items-center bg-primary rounded-lg shadow-md text-white font-semibold text-sm">
                         <MdAdd className="text-xl font-bold" />
                         <span> Thêm sản phẩm</span>
                     </button>
-                    {modals.includes('modal2') && (
-                        <div className="modal">
-                            <div className="modal-content">
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="fixed inset-0 bg-[#0a1e4266] opacity-50" onClick={() => closeModal('modal1')}></div>
-                                    <div className="bg-white p-4 z-50 w-full h-full md:h-auto  md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528" >
-                                        <div className=" w-full flex justify-between mb-5">
-                                            <h2 className='font-semibold text-xl'>Chỉnh sửa sản phẩm</h2>
-                                            <button onClick={() => closeModal('modal2')}> <IoMdClose className="text-2xl text-gray-200" /></button>
-                                        </div>
-                                        <div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Tên sản phẩm phẩm:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                            </div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Số lượng:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                            </div >
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Giá:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="text-sm font-semibold">Ảnh:</label>
-                                                <label className="block mt-1">
-                                                    <span className="sr-only">Choose profile photo</span>
-                                                    <input type="file" className="block w-full text-sm text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:opacity-50 file:disabled:pointer-events-none dark:file:bg-blue-500 dark:hover:file:bg-blue-400 " /> </label>
-                                            </div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Mô tả:</label>
-                                                <textarea name="" id="" className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
-                                            </div>
-                                            <div className="flex justify-end">
-                                                <button onClick={() => closeModal('modal1')} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
-                                                <button className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2">Lưu</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                    }
                 </div>
+                    <AddProduct setProducts={setProducts} />
                 <div>
                     <div>
                         {tabs.map((tab, index) => (
