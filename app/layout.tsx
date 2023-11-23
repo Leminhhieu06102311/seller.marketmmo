@@ -3,10 +3,10 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { useEffect, useState } from 'react'
-import { FaBell, FaUser } from 'react-icons/fa'
+import { FaBell, FaCreditCard, FaFileInvoice, FaGift, FaRegClock, FaUser } from 'react-icons/fa'
 import Image from 'next/image'
 import Link from 'next/link'
-import { IoIosSearch } from 'react-icons/io'
+import { IoIosSearch, IoMdClose, IoMdSettings } from 'react-icons/io'
 import { AiFillDashboard } from 'react-icons/ai'
 import { FaCartShopping } from 'react-icons/fa6'
 import { FiMenu } from 'react-icons/fi'
@@ -28,6 +28,14 @@ export default function RootLayout({
   }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchModallOpen, setSearchModalOpen] = useState(false);
+  const [notificationModallOpen, setNotificationModalOpen] = useState(false);
+  const openNotification = () => {
+    setNotificationModalOpen(true);
+  };
+
+  const closeNotification = () => {
+    setNotificationModalOpen(false);
+  };
   const openSearch = () => {
     setSearchModalOpen(true);
   };
@@ -55,14 +63,16 @@ export default function RootLayout({
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="">
-                    <button className="inline-flex items-center justify-center p-2 text-[1.5rem] w-10 h-10 hover:bg-[#63738114] rounded-full">
+                    <button onClick={openNotification} className="inline-flex relative items-center justify-center p-2 text-[1.5rem] w-10 h-10 hover:bg-[#63738114] rounded-full">
                       <FaBell className="w-5 h-5" />
+                      <span className='absolute top-[9px] right-[9px] rounded-full p-[5px] bg-[red]'></span>
                     </button>
                     <button className="inline-flex items-center justify-center p-2 ml-2 w-10 h-10  rounded-full hover:bg-[#63738114] ">
                       <div className="w-full h-full rounded-full overflow-hidden border-[2px solid rgb(249, 250, 251)]">
                         <Image className="w-full h-full text-center object-cover " src="/images/product/1.webp" alt="" width={40} height={40} />
                       </div>
                     </button>
+
                   </div>
                 </div>
               </div>
@@ -71,22 +81,27 @@ export default function RootLayout({
         )}
         <div className="flex relative ">
           {/* NAV */}
-          <div className=" flex-shrink-0 w-[280px] h-screen p-0 overflow-scroll scroll-auto border-r hidden  lg:block">
-            <div className="">
-              <div className="text-xl font-bold w-full text-center p-7">Market MMO</div>
-              <div className="my-6 mx-5 py-4 px-5 rounded-xl bg-[#919eab1f] flex ">
-                <div className="w-10 h-10 overflow-hidden rounded-full">
-                  <Image src="/images/product/1.webp" alt="" width={40} height={40} />
+          <div className='h-full sticky top-0 '>
+            <div className=" flex-shrink-0 w-[280px] h-screen p-0 overflow-scroll scroll-auto border-r hidden  lg:block">
+              <div className="">
+                <div className="text-xl font-bold w-full text-center p-7">Market MMO</div>
+                <div className="my-6 mx-5 py-4 px-5 rounded-xl bg-[#919eab1f] flex ">
+                  <div className="w-10 h-10 overflow-hidden rounded-full">
+                    <Image src="/images/product/1.webp" alt="" width={40} height={40} />
+                  </div>
+                  <div className="flex items-center ml-4">
+                    <h6 className="font-semibold text-[0.875rem">Jaydon Frankie</h6>
+                  </div>
                 </div>
-                <div className="flex items-center ml-4">
-                  <h6 className="font-semibold text-[0.875rem">Jaydon Frankie</h6>
-                </div>
+                <nav className="px-4 ">
+                  <Link href="/" className="mb-1 text-sm rounded-md capitalize text-primary font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer bg-[#1877f214]"><AiFillDashboard className="w-6 h-6 mr-4" /><span>Dashboard</span></Link>
+                  <Link href="/products-manager" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaCartShopping className="w-6 h-6 mr-4" /><span>Sản phẩm</span></Link>
+                  <Link href="/financial" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaCreditCard className="w-6 h-6 mr-4" /><span>Tài chính</span></Link>
+                  <Link href="/orders-manager" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaFileInvoice className="w-6 h-6 mr-4" /><span>Quản lí đơn hàng</span></Link>
+                  <Link href="/promotion" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaGift className="w-6 h-6 mr-4" /><span>Ưu dãi</span></Link>
+                  <Link href="/settings" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><IoMdSettings className="w-6 h-6 mr-4" /><span>Cài đặt</span></Link>
+                </nav>
               </div>
-              <nav className="px-4 ">
-                <Link href="" className="mb-1 text-sm rounded-md capitalize text-primary font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer bg-[#1877f214]"><AiFillDashboard className="w-6 h-6 mr-4" /><span>Dashboard</span></Link>
-                <Link href="" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaUser className="w-6 h-6 mr-4" /><span>User</span></Link>
-                <Link href="" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaCartShopping className="w-6 h-6 mr-4" /><span>Product</span></Link>
-              </nav>
             </div>
           </div>
           {/* NavModal */}
@@ -116,6 +131,149 @@ export default function RootLayout({
                       <Link href="" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaUser className="w-6 h-6 mr-4" /><span>User</span></Link>
                       <Link href="" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaCartShopping className="w-6 h-6 mr-4" /><span>Product</span></Link>
                     </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* Notification Modal */}
+          {notificationModallOpen && (
+            <div className="fixed inset-0 overflow-y-auto z-50 transition">
+              <div className="flex items-start justify-start min-h-screen pt-4 px-4 pb-20 text-left sm:block sm:p-0">
+                <div className="fixed inset-0 ">
+                  <div
+                    className="absolute inset-0 bg-transparent"
+                    onClick={closeNotification}
+                  ></div>
+                </div>
+
+                <div className="w-full h-full fixed right-0  top-0 md:top-[45px] md:right-[105px] lg:right-[125px] rounded-lg shadow-lg  lg:top-[45px]  bg-white  md:h-[80vh] md:w-[380px] lg:h-[80vh] lg:w-[380px]">
+                  <div className=" overflow-scroll scroll-auto w-full h-full">
+                    <div className='font-bold border-b pb-2 px-6 py-4 flex items-center justify-between'>  <h2 className=' text-xl '>Thông báo</h2> <button onClick={closeNotification}><IoMdClose className='text-2xl text-gray-400' /></button></div>
+                    <h3 className='text-sm py-1 mb-3 px-6 border-b font-semibold '>MỚI</h3>
+                    <div>
+                      <div className='hover:bg-gray-50 bg-gray-100 px-6 py-4'>
+
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='hover:bg-gray-50 bg-gray-100 px-6 py-4'>
+
+                        <div className='flex items-center '>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <h3 className='text-sm py-1 my-3 px-6 border-y font-semibold '>ĐÃ ĐỌC</h3>
+                    <div>
+                      <div className='px-6 py-4 hover:bg-gray-50'>
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='px-6 py-4 hover:bg-gray-50'>
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='px-6 py-4 hover:bg-gray-50'>
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='px-6 py-4 hover:bg-gray-50'>
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='px-6 py-4 hover:bg-gray-50'>
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='px-6 py-4 hover:bg-gray-50'>
+                        <div className='flex items-center'>
+                          <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
+                            <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                          </div>
+                          <div className='text-sm'>
+                            <div className='mb-[2px]'>
+                              <span className='font-semibold mr-1'>Sản phẩm</span>
+                              <span className='text-gray-600'>của bạn đang được chờ duyệt</span>
+                            </div>
+                            <div className='font-medium text-xs flex items-center text-gray-400'><FaRegClock className='mr-1' /> 1 tiếng trước</div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div className='w-full text-primary py-2 px-6 border-y text-center'>
+                      <h5 className='w-full py-1 rounded-lg hover:bg-blue-50'>Xem thêm</h5>
+                    </div>
                   </div>
                 </div>
               </div>

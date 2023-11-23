@@ -59,7 +59,7 @@ export default function Promotion() {
   };
   return (
     <div className='p-6 max-w-[1536px] w-full m-auto'>
-      <h1 className="text-xl font-bold w-[99%]">Quản lí sản phẩm</h1>
+      <h1 className="text-xl font-bold w-[99%]">Ưu đãi</h1>
       <div className='px-6 py-4'>
         <div className='px-6 py-4 bg-white mb-5 rounded-xl shadow-lg'>
           <div className='flex flex-col md:flex-row lg:flex-row py-4 items-center justify-start md:justify-between lg:justify-between rounded-t-xl overflow-hidden'>
