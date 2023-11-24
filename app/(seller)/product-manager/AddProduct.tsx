@@ -15,15 +15,18 @@ import Image from "next/image";
 import Cookies from 'js-cookie'
 import { AddProduct, Product } from "@/interfaces/product";
 import { toast } from "react-toastify";
-function EditProduct({ setProducts, productId, products }: {
-    setProducts: React.Dispatch<React.SetStateAction<Product[] | undefined>>, productId: string, products: Product[] | undefined
+import { BsDashCircleDotted } from "react-icons/bs";
+import Link from "next/link";
+import { FaRegComment } from "react-icons/fa";
+import { AiOutlineHeart } from "react-icons/ai";
+function AddProduct({ setProducts }: {
+    setProducts: React.Dispatch<React.SetStateAction<Product[] | undefined>>
 }) {
-    const dataPreProduct : Product | undefined = products?.filter((product) => product._id === productId)[0]
     const dispatch = useAppDispatch()
     const [imageUrl, setImageUrl] = useState<string>()
     const [selectFile, setSelectFile] = useState<File | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
-    const token = Cookies.get('access_token')
+    const token = Cookies.get('access_token_seller')
     const [fields, setFields] = useState<AddProduct>({
         name: '',
         categories: '',
@@ -64,26 +67,34 @@ function EditProduct({ setProducts, productId, products }: {
     }, [imageUrl])
     const hanldeAdd = async () => {
         try {
-        const res = await addProduct(fields.name, fields.categories, fields.price, fields.pictures, fields.quantity, fields.description, token)
-        const newProduct = res?.data.data
-        dispatch(hideModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
-        handleUpload()
-        setProducts((prev: any) => [...newProduct, ...prev])
-        toast.success("Tạo sản phẩm thành công")
-        
-        } catch (error) {
-        toast.error("Tạo sản phẩm thất bại vui lòng thử lại sau!")
+            const res = await addProduct(fields.name, fields.categories, fields.price, fields.pictures, fields.quantity, fields.description, token)
+            const newProduct = res?.data.data
+            dispatch(hideModal(ENUM_NAME_MODAL.ADD_PRODUCT))
+            handleUpload()
+            setFields({
+                name: '',
+                categories: '',
+                pictures: [''],
+                price: 0,
+                quantity: 0,
+                description: ''
+            })
+            setProducts((prev: any) => [...newProduct, ...prev])
+            toast.success("Tạo sản phẩm thành công")
 
-            
+        } catch (error) {
+            toast.error("Tạo sản phẩm thất bại vui lòng thử lại sau!")
+
+
         }
     }
     return (
-        <ContentModal nameModal={ENUM_NAME_MODAL.EDIT_PRODUCT}>
+        <ContentModal nameModal={ENUM_NAME_MODAL.ADD_PRODUCT}>
             <div className="flex justify-center items-center w-full h-full">
                 <div className="bg-white p-4 z-50 w-full h-full md:h-auto max-h-[700px]  overflow-y-scroll md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528" >
                     <div className=" w-full flex justify-between mb-5">
-                        <h2 className='font-semibold text-xl'>Chỉnh sửa sản phẩm</h2>
-                        <button onClick={() => dispatch(hideModal(ENUM_NAME_MODAL.EDIT_PRODUCT))}> <IoMdClose className="text-2xl text-gray-200" /></button>
+                        <h2 className='font-semibold text-xl'>Thêm sản phẩm mới</h2>
+                        <button onClick={() => dispatch(hideModal(ENUM_NAME_MODAL.ADD_PRODUCT))}> <IoMdClose className="text-2xl text-gray-200" /></button>
                     </div>
                     <div>
                         <div className="flex flex-col mb-2">
@@ -91,7 +102,7 @@ function EditProduct({ setProducts, productId, products }: {
                             <input
                                 type="text"
                                 className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"
-                                value={ fields.name || dataPreProduct?.name}
+                                value={fields.name}
                                 onChange={(e) => setFields({ ...fields, name: e.target.value })}
                             />
                         </div>
@@ -100,7 +111,7 @@ function EditProduct({ setProducts, productId, products }: {
                             <input
                                 type="text"
                                 className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"
-                                value={fields.quantity || dataPreProduct?.quantity}
+                                value={fields.quantity}
                                 onChange={(e) => setFields({ ...fields, quantity: +e.target.value })}
                             />
                         </div >
@@ -109,7 +120,7 @@ function EditProduct({ setProducts, productId, products }: {
                             <input
                                 type="text"
                                 className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"
-                                value={fields.price || dataPreProduct?.price}
+                                value={fields.price}
                                 onChange={(e) => setFields({ ...fields, price: +e.target.value })}
                             />
                         </div>
@@ -139,7 +150,7 @@ function EditProduct({ setProducts, productId, products }: {
                             <textarea name="" id="" value={fields.description} onChange={(e) => setFields({ ...fields, description: e.target.value })} className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
                         </div>
                         <div className="flex justify-end">
-                            <button onClick={() => dispatch(hideModal(ENUM_NAME_MODAL.EDIT_PRODUCT))} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
+                            <button onClick={() => dispatch(hideModal(ENUM_NAME_MODAL.ADD_PRODUCT))} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
                             <button
                                 className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
                                 onClick={hanldeAdd}
@@ -147,11 +158,11 @@ function EditProduct({ setProducts, productId, products }: {
                         </div>
                     </div>
                 </div>
-
+               
             </div>
         </ContentModal>
 
     )
 }
 
-export default memo(EditProduct)
+export default memo(AddProduct)

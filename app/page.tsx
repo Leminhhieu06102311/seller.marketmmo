@@ -28,16 +28,21 @@ export default function Home({
     }, []);
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const token: string = Cookies.get('access_token')
+    const token: string = Cookies.get('access_token_seller')
     const { isLoggedIn } = useAppSelector((state) => state.user)
     useEffect(() => {
         const checkLogin = async () => {
             try {
                 const dataUser = await getUser(token)
+                console.log(dataUser)
                 if (dataUser && dataUser._id) {
                     dispatch(setLoggedIn(true))
+                } else {
+                router.replace('/login')
+
                 }
             } catch (error) {
+                console.log(error)
                 router.replace('/login')
             }
         }

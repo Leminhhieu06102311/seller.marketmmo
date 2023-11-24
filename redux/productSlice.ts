@@ -1,18 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 interface stateProduct {
-    isAddProduct: boolean
+    activeSearchCate: number
 }
 const initialState : stateProduct = {
-    isAddProduct: false
+    activeSearchCate: 0
 }
 const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-        toggleStatusAddProduct: (state) => {
-            state.isAddProduct = !state.isAddProduct
+        toggleActiveSearchCate: (state, action : PayloadAction<number>) => {
+            state.activeSearchCate = action.payload
         }
     }
 })
-export const { toggleStatusAddProduct} = productSlice.actions
+export const { toggleActiveSearchCate} = productSlice.actions
 export default productSlice.reducer

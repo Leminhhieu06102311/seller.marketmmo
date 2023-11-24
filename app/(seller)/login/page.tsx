@@ -56,7 +56,7 @@ export default function Login() {
           const dataUser = await getUser(access_token)
           if (dataUser.role === ENUM_ROLE_TYPE.SELLER) {
                 console.log(dataUser.role)
-              Cookies.set('access_token', access_token, { expires: 10 })
+              Cookies.set('access_token_seller', access_token, { expires: 10 })
               router.push("/");
               return "Đăng nhập thành công"
           } else {

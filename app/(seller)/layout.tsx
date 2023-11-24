@@ -15,7 +15,7 @@ export default function ManagerLayout({
 }) {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const token: string = Cookies.get('access_token')
+  const token: string = Cookies.get('access_token_seller')
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -26,7 +26,6 @@ export default function ManagerLayout({
       } catch (error) {
         router.replace('/login')
       }
-
     }
     checkLogin()
   }, [token])
