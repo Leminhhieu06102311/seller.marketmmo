@@ -51,24 +51,30 @@ function AddProduct({ setProducts }: {
             setImageUrl(objectUrl)
         }
     };
-    const handleUpload = async () => {
-        if (!selectFile) return;
-        const randomString = generateRandomString(8);
-        const timestamp = getCurrentTimestamp();
-        const storageRef = ref(storage, `product/${randomString}_${timestamp}_${selectFile.name}`);
-        const task = await uploadBytes(storageRef, selectFile)
-        const url = await getDownloadURL(task.ref)
-        setFields({ ...fields, pictures: [url] })
-    };
+    // const handleUpload = async () => {
+    //     if (!selectFile) return;
+    //     const randomString = generateRandomString(8);
+    //     const timestamp = getCurrentTimestamp();
+    //     const storageRef = ref(storage, `product/${randomString}_${timestamp}_${selectFile.name}`);
+    //     const task = await uploadBytes(storageRef, selectFile)
+    //     const url = await getDownloadURL(task.ref)
+    //     setFields({ ...fields, pictures: [url] })
+    // };
     useEffect(() => {
         return () => {
             if (imageUrl) URL.revokeObjectURL(imageUrl)
         }
     }, [imageUrl])
     const hanldeAdd = async () => {
-        handleUpload()                 
         try {
-            const res = await addProduct(fields.name, fields.categories, fields.price, fields.pictures, fields.quantity, fields.description, token)
+            if (!selectFile) return;
+            const randomString = generateRandomString(8);
+            const timestamp = getCurrentTimestamp();
+            const storageRef = ref(storage, `product/${randomString}_${timestamp}_${selectFile.name}`);
+            const task = await uploadBytes(storageRef, selectFile)
+            const url = await getDownloadURL(task.ref)
+            const pictures = [url]
+            const res = await addProduct(fields.name, fields.categories, fields.price, pictures, fields.quantity, fields.description, token)
             const newProduct = res?.data.data
             dispatch(hideModal(ENUM_NAME_MODAL.ADD_PRODUCT))
             setFields({
