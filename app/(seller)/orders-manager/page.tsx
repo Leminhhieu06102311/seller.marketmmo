@@ -1,39 +1,49 @@
 "use client";
-import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
 import { IoFilterOutline } from "react-icons/io5";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { useState } from "react";
-import { MdDeleteForever } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
+import { useEffect, useState } from "react";
+import { fetchHistoriesOrder } from "@/services/order";
+import Cookies from 'js-cookie'
+import { ENUM_STATUS_ORDER } from "@/enum/status_order";
+import { HistoryOrder } from "@/interfaces/history_order";
+import { formatCurrencyVND } from "@/utils/format_vnd";
 export default function Order() {
-    const [modals, setModals] = useState<string[]>([]);
-    const openModal = (modalId: string) => {
-        setModals([...modals, modalId]);
-    };
+    const [status, setStatus] = useState(ENUM_STATUS_ORDER.SUCCESS)
+    const [historiesOrder, setHistoriesOrder] = useState<HistoryOrder[]>([])
+    const [page, setPage] = useState(1)
+    const [searchTerm, setSearchTerm] = useState('')
+    const token = Cookies.get('access_token_seller')
+    useEffect(() => {
+        const getHistoriesOrder = async () => {
+            const res = await fetchHistoriesOrder(token, status, page)
+            setHistoriesOrder(res)
+        }
+        getHistoriesOrder()
+    }, [status, page])
+    useEffect(() => {
+        const result = historiesOrder.filter((his) => his.product.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
 
-    const closeModal = (modalId: string) => {
-        setModals(modals.filter((id) => id !== modalId));
-    };
-    //
+    }, [searchTerm])
     return (
         <div className="p-6 max-w-[1536px] w-full m-auto">
-            <h1 className="text-xl font-bold mb-4">Quản lí sản phẩm</h1>
+            <h1 className="text-xl font-bold mb-4">Quản lí đơn hàng</h1>
             <div>
-                <div className="flex justify-between items-center bg-white  px-6 rounded-t-xl h-[96px]">
-                    <div className="flex items-center gap-x-3">
-                        <div className="flex items-center bg-white border px-3 py-4 rounded-lg hover:border-primary transition duration-300 w-[250px]">
+                <div className="flex justify-between items-center bg-white gap-3 px-6 rounded-t-xl h-[96px]">
+                    <div className="flex items-center gap-x-3 w-full flex-1 ">
+                        <div className="flex items-center bg-white border px-3 py-2 w-full rounded-lg hover:border-primary transition duration-300 ">
                             <IoIosSearch className="text-lg mr-2 text-gray-400 flex-shrink-0" />
                             <input
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                                 type="text"
-                                placeholder="Search..."
+                                placeholder="Tìm kiếm bằng tên hoặc mã đơn hàng"
                                 className="bg-transparent focus:outline-none w-full"
                             />
                         </div>
                     </div>
                     <div className="flex items-center gap-x-2">
                         <p className="leading-5 font-semibold lg:m-0 text-black text-sm">
-                            1234 đơn hàng
+                            {historiesOrder.length} đơn hàng
                         </p>
                         <div className="p-2">
                             <IoFilterOutline />
@@ -44,88 +54,68 @@ export default function Order() {
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
                             <tr>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Mã đơn hàng</th>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Thông tin đơn hàng</th>
+                                <th className="text-start text-sm p-4 whitespace-nowrap">Tên sản phẩm</th>
                                 <th className="text-start text-sm p-4 whitespace-nowrap">Tên khách hàng</th>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Số điện thoại</th>
                                 <th className="text-start text-sm p-4 whitespace-nowrap">Ngày đặt hàng</th>
                                 <th className="text-start text-sm p-4 whitespace-nowrap">Thành tiền</th>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Action</th>
+                                <th className="text-start text-sm p-4 whitespace-nowrap">Trạng thái</th>
+                                <th className="text-start text-sm p-4 whitespace-nowrap">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="bg-white border-t hover:bg-gray-50">
-                                <td className="p-4 whitespace-nowrap text-sm">655b59757e87bab1ae8fc25d</td>
-                                <td className="p-4 whitespace-nowrap md:sticky">
-                                    <div className="flex justify-start items-center">
-                                        <div className="flex">
-                                            <div className="text-sm text-primary font-semibold mr-1">
-                                                AJDIEHEHGFLASLKDJJASKDAS
+                            {historiesOrder.length > 0 ? (<>
+                                {historiesOrder.map((his) => (
+
+                                    <tr className="bg-white border-t hover:bg-gray-50">
+                                        <td className="p-4 whitespace-nowrap md:sticky">
+                                            <div className="flex justify-start items-center">
+                                                <div className="flex">
+                                                    <div className="text-sm text-primary font-semibold mr-1">
+                                                        AJDIEHEHGFLASLKDJJASKDAS
+                                                    </div>
+                                                    <div className="text-sm">x{his.quantity}</div>
+                                                </div>
                                             </div>
-                                            <div className="text-sm">x1</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="p-4 whitespace-nowrap text-sm">Pham Gia Kien</td>
-                                <td className="p-4 whitespace-nowrap text-sm">0123456789</td>
-                                <td className="p-4 whitespace-nowrap text-sm">16/07/2023 11:45:02</td>
-                                <td className="p-4 whitespace-nowrap text-sm font-semibold">20.000VND</td>
-                                <th className="text-start p-4 relative">
-                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
-                                        <CiEdit />
-                                    </button>
-                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
-                                        <MdDeleteForever />
-                                    </button>
-                                </th>
-                            </tr>
+                                        </td>
+                                        <td className="p-4 whitespace-nowrap text-sm">Le Minh Hieu</td>
+                                        <td className="p-4 whitespace-nowrap text-sm">{his.createdAt}</td>
+                                        <td className="p-4 whitespace-nowrap text-sm font-semibold">{formatCurrencyVND(his.totalPrice)}</td>
+                                        <td className="p-4 whitespace-nowrap text-sm font-semibold">
+                                            <button type="button" className="py-2 text-xs px-4 inline-flex items-center gap-x-2  font-semibold rounded-lg border border-transparent bg-yellow-100 text-yellow-800 hover:bg-yellow-200 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-yellow-900 dark:text-yellow-500 dark:hover:text-yellow-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                                                Đang chờ duyệt
+                                            </button>
+
+                                        </td>
+                                        <td className="p-4 whitespace-nowrap text-sm font-semibold ">
+                                            <button type="button" className="py-2 px-4 inline-flex gap-2 items-center gap-x-2 text-xs font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                                                <p>Nhắn tin</p>
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                ))}
+                            </>) : (
+                               <tr className="bg-white border-t hover:bg-gray-50">
+                               <td className="p-4 whitespace-nowrap md:sticky">
+                                  
+                               </td>
+                               <td className="p-4 whitespace-nowrap text-sm"></td>
+                               <td className="p-4 whitespace-nowrap text-sm text-slate-900 font-medium ">Không có dữ liệu đơn hàng nào</td>
+                               <td className="p-4 whitespace-nowrap text-sm"></td>
+                               <td className="p-4 whitespace-nowrap text-sm font-semibold">
+                                  
+
+                               </td>
+                               <td className="p-4 whitespace-nowrap text-sm font-semibold ">
+                                   
+                               </td>
+
+                           </tr>
+                            )}
 
                         </tbody>
                     </table>
-                    {modals.includes('modal1') && (
-                        <div className="modal">
-                            <div className="modal-content">
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="fixed inset-0 bg-[#0a1e4266] opacity-50" onClick={() => closeModal('modal1')}></div>
-                                    <div className="bg-white p-4 z-50 w-full h-full md:h-auto  md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528" >
-                                        <div className=" w-full flex justify-between mb-5">
-                                            <h2 className='font-semibold text-xl'>Chỉnh sửa sản phẩm</h2>
-                                            <button onClick={() => closeModal('modal1')}> <IoMdClose className="text-2xl text-gray-200" /></button>
-                                        </div>
-                                        <div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Tên sản phẩm phẩm:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg focus:outline-primary" />
-                                            </div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Số lượng:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg focus:outline-primary" />
-                                            </div >
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Giá:</label>
-                                                <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg focus:outline-primary" />
-                                            </div>
-                                            <div className="mb-2">
-                                                <label className="text-sm font-semibold">Ảnh:</label>
-                                                <label className="block mt-1">
-                                                    <span className="sr-only">Choose profile photo</span>
-                                                    <input type="file" className="block w-full text-sm text-gray-500 file:me-4 file:py-2 focus:outline-primary file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:opacity-50 file:disabled:pointer-events-none dark:file:bg-blue-500 dark:hover:file:bg-blue-400 " /> </label>
-                                            </div>
-                                            <div className="flex flex-col mb-2">
-                                                <label className="text-sm font-semibold">Mô tả:</label>
-                                                <textarea name="" id="" className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
-                                            </div>
-                                            <div className="flex justify-end">
-                                                <button onClick={() => closeModal('modal1')} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
-                                                <button className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2">Lưu</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                    }
+
                 </div>
                 <div className="rounded-b-xl overflow-hidden">
                     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
@@ -146,22 +136,22 @@ export default function Order() {
                         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                             <div>
                                 <div className="text-sm text-gray-700">
-                                    Showing
-                                    <span className="font-medium mx-1">1</span>
-                                    to
-                                    <span className="font-medium mx-1">10</span>
-                                    of
-                                    <span className="font-medium mx-1">97</span>
-                                    results
+                                    Tổng <b>{historiesOrder.length}</b> kết quả 
                                 </div>
                             </div>
                             <div>
                                 <nav
-                                    className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                                    className="isolate inline-flex -space-x-px rounded-md shadow-sm gap-2"
                                     aria-label="Pagination"
                                 >
-                                    <a
-                                        href="#"
+                                    <button
+                                        onClick={() => setPage((pre : number) => {
+                                            if (pre === 1) {
+                                                return 1
+                                            } else {
+                                                return pre - 1
+                                            }
+                                        })}
                                         className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                                     >
                                         <span className="sr-only">Previous</span>
@@ -177,50 +167,10 @@ export default function Order() {
                                                 clipRule="evenodd"
                                             />
                                         </svg>
-                                    </a>
-                                    {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-                                    <a
-                                        href="#"
-                                        aria-current="page"
-                                        className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        1
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                    >
-                                        2
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                                    >
-                                        3
-                                    </a>
-                                    <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
-                                        ...
-                                    </span>
-                                    <a
-                                        href="#"
-                                        className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                                    >
-                                        8
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                    >
-                                        9
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                    >
-                                        10
-                                    </a>
-                                    <a
-                                        href="#"
+                                    </button>
+
+                                    <button
+                                        onClick={() => setPage((pre : number) => pre + 1)}
                                         className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                                     >
                                         <span className="sr-only">Next</span>
@@ -236,7 +186,7 @@ export default function Order() {
                                                 clipRule="evenodd"
                                             />
                                         </svg>
-                                    </a>
+                                    </button>
                                 </nav>
                             </div>
                         </div>
