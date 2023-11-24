@@ -22,7 +22,6 @@ export default function Order() {
     }, [status, page])
     useEffect(() => {
         const result = historiesOrder.filter((his) => his.product.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
-
     }, [searchTerm])
     return (
         <div className="p-6 max-w-[1536px] w-full m-auto">

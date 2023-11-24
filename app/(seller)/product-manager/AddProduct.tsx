@@ -66,11 +66,11 @@ function AddProduct({ setProducts }: {
         }
     }, [imageUrl])
     const hanldeAdd = async () => {
+        handleUpload()                 
         try {
             const res = await addProduct(fields.name, fields.categories, fields.price, fields.pictures, fields.quantity, fields.description, token)
             const newProduct = res?.data.data
             dispatch(hideModal(ENUM_NAME_MODAL.ADD_PRODUCT))
-            handleUpload()
             setFields({
                 name: '',
                 categories: '',
