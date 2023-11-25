@@ -19,7 +19,7 @@ export default function TransactionManagement() {
     return (
         <div className="p-6 max-w-[1536px] w-full m-auto">
             <div className='mb-3'>
-                <h1 className='font-bold text-lg'>Transaction Management</h1>
+                <h1 className='font-bold text-lg'>Kiểm duyệt rút tiền</h1>
             </div>
             <div>
                 <div className="flex justify-between items-center bg-white  px-6 rounded-t-xl h-[96px]">
@@ -36,12 +36,12 @@ export default function TransactionManagement() {
                         <thead>
                             <tr>
                                 <th className="text-start text-sm p-4">Username</th>
-                                <th className="text-start text-sm p-4">Name</th>
-                                <th className="text-start text-sm p-4">Email</th>
-                                <th className="text-start text-sm p-4">Phone</th>
-                                <th className="text-start text-sm p-4">Status</th>
-                                <th className="text-start text-sm p-4">Approval</th>
-                                <th className="text-start text-sm p-4">Action</th>
+                                <th className="text-start text-sm p-4">Họ và tên</th>
+                                <th className="text-start text-sm p-4">Số điện thoại</th>
+                                <th className="text-start text-sm p-4">Số tiền</th>
+                                <th className="text-start text-sm p-4">Trạng thái</th>
+                                <th className="text-start text-sm p-4">Kiểm duyệt</th>
+                                <th className="text-start text-sm p-4">Hành động</th>
                             </tr>
 
                         </thead>
@@ -51,8 +51,8 @@ export default function TransactionManagement() {
                                     <span className="text-sm font-semibold">AJDIEHEHGF</span>
                                 </td>
                                 <td className="p-4 text-sm">Pham Gia Kien</td>
-                                <td className="p-4 text-sm">12345@gmail.com</td>
                                 <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4 text-sm">200.000đ</td>
                                 <td className="p-4 text-sm"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs whitespace-nowrap">Đã duyệt</span></td>
                                 <td className="p-4 text-sm">
                                     <label className="relative inline-flex items-center cursor-pointer">
@@ -74,16 +74,83 @@ export default function TransactionManagement() {
                                     <span className="text-sm font-semibold">AJDIEHEHGF</span>
                                 </td>
                                 <td className="p-4 text-sm">Pham Gia Kien</td>
-                                <td className="p-4 text-sm">12345@gmail.com</td>
                                 <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4 text-sm">200.000đ</td>
                                 <td className="p-4 text-sm"><span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs whitespace-nowrap">Chưa duyệt</span></td>
                                 <td className="p-4 text-sm">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" className="sr-only peer" />
                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-                                    </label>
+                                    </label></td>
+                                <th className="text-start p-4 relative">
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button> */}
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
 
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <span className="text-sm font-semibold">AJDIEHEHGF</span>
                                 </td>
+                                <td className="p-4 text-sm">Pham Gia Kien</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4 text-sm">200.000đ</td>
+                                <td className="p-4 text-sm"><span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs whitespace-nowrap">Chưa duyệt</span></td>
+                                <td className="p-4 text-sm">
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" className="sr-only peer" />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+                                    </label></td>
+                                <th className="text-start p-4 relative">
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button> */}
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <span className="text-sm font-semibold">AJDIEHEHGF</span>
+                                </td>
+                                <td className="p-4 text-sm">Pham Gia Kien</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4 text-sm">200.000đ</td>
+                                <td className="p-4 text-sm"><span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs whitespace-nowrap">Chưa duyệt</span></td>
+                                <td className="p-4 text-sm">
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" className="sr-only peer" />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+                                    </label></td>
+                                <th className="text-start p-4 relative">
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button> */}
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <span className="text-sm font-semibold">AJDIEHEHGF</span>
+                                </td>
+                                <td className="p-4 text-sm">Pham Gia Kien</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4 text-sm">200.000đ</td>
+                                <td className="p-4 text-sm"><span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs whitespace-nowrap">Chưa duyệt</span></td>
+                                <td className="p-4 text-sm">
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" className="sr-only peer" />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+                                    </label></td>
                                 <th className="text-start p-4 relative">
                                     {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
                                         <CiEdit />

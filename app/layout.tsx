@@ -3,7 +3,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { useEffect, useState } from 'react'
-import { FaBell, FaCreditCard, FaFileInvoice, FaGift, FaRegClock, FaUser } from 'react-icons/fa'
+import { FaBell, FaCreditCard, FaFileInvoice, FaFileInvoiceDollar, FaGift, FaRegClock, FaUser } from 'react-icons/fa'
 import Image from 'next/image'
 import Link from 'next/link'
 import { IoIosSearch, IoMdClose, IoMdSettings } from 'react-icons/io'
@@ -97,6 +97,8 @@ export default function RootLayout({
                   <Link href="/" className="mb-1 text-sm rounded-md capitalize text-primary font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer bg-[#1877f214]"><AiFillDashboard className="w-6 h-6 mr-4" /><span>Dashboard</span></Link>
                   <Link href="/products-manager" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaCartShopping className="w-6 h-6 mr-4" /><span>Sản phẩm</span></Link>
                   <Link href="/financial" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaCreditCard className="w-6 h-6 mr-4" /><span>Tài chính</span></Link>
+                  <Link href="/products-manager" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaUser className="w-6 h-6 mr-4" /><span>Quản lí người dùng</span></Link>
+                  <Link href="/financial" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaFileInvoiceDollar className="w-6 h-6 mr-4" /><span>Kiểm duyệt rút tiền</span></Link>
                   <Link href="/orders-manager" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaFileInvoice className="w-6 h-6 mr-4" /><span>Quản lí đơn hàng</span></Link>
                   <Link href="/promotion" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><FaGift className="w-6 h-6 mr-4" /><span>Ưu dãi</span></Link>
                   <Link href="/settings" className="mb-1 text-sm rounded-md capitalize text-[#637381] font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-[#919eab14] transition-all"><IoMdSettings className="w-6 h-6 mr-4" /><span>Cài đặt</span></Link>

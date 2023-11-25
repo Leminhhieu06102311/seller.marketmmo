@@ -36,12 +36,12 @@ export default function UsersManager() {
                         <thead>
                             <tr>
                                 <th className="text-start text-sm p-4">Username</th>
-                                <th className="text-start text-sm p-4">Name</th>
+                                <th className="text-start text-sm p-4">Họ và tên</th>
                                 <th className="text-start text-sm p-4">Email</th>
-                                <th className="text-start text-sm p-4">Phone</th>
-                                <th className="text-start text-sm p-4">Role</th>
-                                <th className="text-start text-sm p-4">Status</th>
-                                <th className="text-start text-sm p-4">Action</th>
+                                <th className="text-start text-sm p-4">Số điện thoại</th>
+                                <th className="text-start text-sm p-4">Quyền</th>
+                                <th className="text-start text-sm p-4">Trạng thái</th>
+                                <th className="text-start text-sm p-4">Hành động</th>
                             </tr>
 
                         </thead>
@@ -57,6 +57,94 @@ export default function UsersManager() {
                                 <td className="p-4 text-sm">12345@gmail.com</td>
                                 <td className="p-4 text-sm">0376729508</td>
                                 <td className="p-4"><span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs ">ADMIN</span></td>
+                                <td className="p-4 text-sm"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs">Active</span></td>
+                                <th className="text-start p-4 relative">
+                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <div className="flex justify-start items-center">
+                                        <div className="w-10 h-10 overflow-hidden rounded-full mr-2"><img src="/images/product/1.webp" alt="" className="w-full h-full" /></div>
+                                        <span className="text-sm font-semibold">AJDIEHEHGF</span>
+                                    </div>
+                                </td>
+                                <td className="p-4 text-sm">Lê Minh Hiếu</td>
+                                <td className="p-4 text-sm">123456@gmail.com</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs ">USER</span></td>
+                                <td className="p-4 text-sm"><span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs">Ban</span></td>
+                                <th className="text-start p-4 relative">
+                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <div className="flex justify-start items-center">
+                                        <div className="w-10 h-10 overflow-hidden rounded-full mr-2"><img src="/images/promotion/VoucherIcon/1.png" alt="" className="w-full h-full" /></div>
+                                        <span className="text-sm font-semibold">SDFJIOJIOA</span>
+                                    </div>
+                                </td>
+                                <td className="p-4 text-sm">Trần Anh Tú</td>
+                                <td className="p-4 text-sm">1222345@gmail.com</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4"><span className="text-[blue] bg-blue-50 border rounded-lg border-[blue] px-3 py-1 text-xs ">SELLER</span></td>
+                                <td className="p-4 text-sm"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs">Active</span></td>
+                                <th className="text-start p-4 relative">
+                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <div className="flex justify-start items-center">
+                                        <div className="w-10 h-10 overflow-hidden rounded-full mr-2"><img src="/images/admin/dashboard/ic_glass_bag.png" alt="" className="w-full h-full" /></div>
+                                        <span className="text-sm font-semibold">AJDIEHEHGF</span>
+                                    </div>
+                                </td>
+                                <td className="p-4 text-sm">Phan Văn Chương</td>
+                                <td className="p-4 text-sm">12345@gmail.com</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs ">USER</span></td>
+                                <td className="p-4 text-sm"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs">Active</span></td>
+                                <th className="text-start p-4 relative">
+                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4">
+                                    <div className="flex justify-start items-center">
+                                        <div className="w-10 h-10 overflow-hidden rounded-full mr-2"><img src="/images/admin/dashboard/ic_glass_bag.png" alt="" className="w-full h-full" /></div>
+                                        <span className="text-sm font-semibold">AJDIEHEHGF</span>
+                                    </div>
+                                </td>
+                                <td className="p-4 text-sm">Pham Gia Kien</td>
+                                <td className="p-4 text-sm">12345@gmail.com</td>
+                                <td className="p-4 text-sm">0376729508</td>
+                                <td className="p-4"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs ">USER</span></td>
                                 <td className="p-4 text-sm"><span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs">Active</span></td>
                                 <th className="text-start p-4 relative">
                                     <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
