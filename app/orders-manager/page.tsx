@@ -18,7 +18,7 @@ export default function Order() {
     //
     return (
         <div className="p-6 max-w-[1536px] w-full m-auto">
-            <h1 className="text-xl font-bold mb-4">Quản lí sản phẩm</h1>
+            <h1 className="text-xl font-bold mb-4">Quản lí đơn hàng</h1>
             <div>
                 <div className="flex justify-between items-center bg-white  px-6 rounded-t-xl h-[96px]">
                     <div className="flex items-center gap-x-3">
@@ -44,18 +44,41 @@ export default function Order() {
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
                             <tr>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Mã đơn hàng</th>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Thông tin đơn hàng</th>
+                                <th className="text-start text-sm p-4 whitespace-nowrap">Tên sản phẩm</th>
                                 <th className="text-start text-sm p-4 whitespace-nowrap">Tên khách hàng</th>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Số điện thoại</th>
                                 <th className="text-start text-sm p-4 whitespace-nowrap">Ngày đặt hàng</th>
                                 <th className="text-start text-sm p-4 whitespace-nowrap">Thành tiền</th>
-                                <th className="text-start text-sm p-4 whitespace-nowrap">Action</th>
+                                <th className="text-start text-sm p-4 whitespace-nowrap">Trạng thái</th>
+                                <th className="text-start text-sm p-4 whitespace-nowrap">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr className="bg-white border-t hover:bg-gray-50">
-                                <td className="p-4 whitespace-nowrap text-sm">655b59757e87bab1ae8fc25d</td>
+                                <td className="p-4 whitespace-nowrap md:sticky">
+                                    <div className="flex justify-start items-center">
+                                        <div className="flex">
+                                            <div className="text-sm text-primary font-semibold mr-1">
+                                                GMAIL NEW iOS UNVER - NAME US - IP VIỆT - REG TAY
+                                            </div>
+                                            <div className="text-sm">x1</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="p-4 whitespace-nowrap text-sm">Pham Gia Kien</td>
+                                <td className="p-4 whitespace-nowrap text-sm">2023-11-24T22:27:28.344Z</td>
+                                <td className="p-4 whitespace-nowrap text-sm">20.000VND</td>
+                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="whitespace-nowrap text-yellow-900  bg-yellow-100 rounded-lg  px-3 py-2 ">Đang chờ duyệt</span></td>
+                                <th className="text-start p-4 relative">
+                                    <span className="whitespace-nowrap px-3 py-2 text-primary border border-primary text-sm rounded-lg">Nhắn tin</span>
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button> */}
+                                </th>
+                            </tr>
+                            <tr className="bg-white border-t hover:bg-gray-50">
                                 <td className="p-4 whitespace-nowrap md:sticky">
                                     <div className="flex justify-start items-center">
                                         <div className="flex">
@@ -67,19 +90,91 @@ export default function Order() {
                                     </div>
                                 </td>
                                 <td className="p-4 whitespace-nowrap text-sm">Pham Gia Kien</td>
-                                <td className="p-4 whitespace-nowrap text-sm">0123456789</td>
-                                <td className="p-4 whitespace-nowrap text-sm">16/07/2023 11:45:02</td>
-                                <td className="p-4 whitespace-nowrap text-sm font-semibold">20.000VND</td>
+                                <td className="p-4 whitespace-nowrap text-sm">2023-11-24T22:27:28.344Z</td>
+                                <td className="p-4 whitespace-nowrap text-sm">20.000VND</td>
+                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="whitespace-nowrap text-yellow-900  bg-yellow-100 rounded-lg  px-3 py-2 ">Đang chờ duyệt</span></td>
                                 <th className="text-start p-4 relative">
-                                    <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                    <span className="whitespace-nowrap px-3 py-2 text-primary border border-primary text-sm rounded-lg">Nhắn tin</span>
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
                                         <CiEdit />
                                     </button>
                                     <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
                                         <MdDeleteForever />
+                                    </button> */}
+                                </th>
+                            </tr> <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4 whitespace-nowrap md:sticky">
+                                    <div className="flex justify-start items-center">
+                                        <div className="flex">
+                                            <div className="text-sm text-primary font-semibold mr-1">
+                                                AJDIEHEHGFLASLKDJJASKDAS
+                                            </div>
+                                            <div className="text-sm">x1</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="p-4 whitespace-nowrap text-sm">Pham Gia Kien</td>
+                                <td className="p-4 whitespace-nowrap text-sm">2023-11-24T22:27:28.344Z</td>
+                                <td className="p-4 whitespace-nowrap text-sm">20.000VND</td>
+                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="whitespace-nowrap text-yellow-900  bg-yellow-100 rounded-lg  px-3 py-2 ">Đang chờ duyệt</span></td>
+                                <th className="text-start p-4 relative">
+                                    <span className="whitespace-nowrap px-3 py-2 text-primary border border-primary text-sm rounded-lg">Nhắn tin</span>
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
                                     </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button> */}
+                                </th>
+                            </tr> <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4 whitespace-nowrap md:sticky">
+                                    <div className="flex justify-start items-center">
+                                        <div className="flex">
+                                            <div className="text-sm text-primary font-semibold mr-1">
+                                                AJDIEHEHGFLASLKDJJASKDAS
+                                            </div>
+                                            <div className="text-sm">x1</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="p-4 whitespace-nowrap text-sm">Pham Gia Kien</td>
+                                <td className="p-4 whitespace-nowrap text-sm">2023-11-24T22:27:28.344Z</td>
+                                <td className="p-4 whitespace-nowrap text-sm">20.000VND</td>
+                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="whitespace-nowrap text-yellow-900  bg-yellow-100 rounded-lg  px-3 py-2 ">Đang chờ duyệt</span></td>
+                                <th className="text-start p-4 relative">
+                                    <span className="whitespace-nowrap px-3 py-2 text-primary border border-primary text-sm rounded-lg">Nhắn tin</span>
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                                        <MdDeleteForever />
+                                    </button> */}
+                                </th>
+                            </tr> <tr className="bg-white border-t hover:bg-gray-50">
+                                <td className="p-4 whitespace-nowrap md:sticky">
+                                    <div className="flex justify-start items-center">
+                                        <div className="flex">
+                                            <div className="text-sm text-primary font-semibold mr-1">
+                                                AJDIEHEHGFLASLKDJJASKDAS
+                                            </div>
+                                            <div className="text-sm">x10</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="p-4 whitespace-nowrap text-sm">Pham Gia Kien</td>
+                                <td className="p-4 whitespace-nowrap text-sm">2023-11-24T22:27:28.344Z</td>
+                                <td className="p-4 whitespace-nowrap text-sm">200.000 VND</td>
+                                <td className="p-4 whitespace-nowrap text-sm font-semibold"><span className="whitespace-nowrap text-primary  bg-blue-50 border border-primary rounded-lg  px-3 py-2 ">Đã duyệt</span></td>
+                                <th className="text-start p-4 relative">
+                                    <span className="whitespace-nowrap px-3 py-2 text-primary border border-primary text-sm rounded-lg">Nhắn tin</span>
+                                    {/* <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                        <CiEdit />
+                                    </button>
+                                    <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] "> 
+                                        <MdDeleteForever />
+                                    </button> */}
                                 </th>
                             </tr>
-
                         </tbody>
                     </table>
                     {modals.includes('modal1') && (
@@ -179,7 +274,7 @@ export default function Order() {
                                         </svg>
                                     </a>
                                     {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-                                    <a
+                                    {/* <a
                                         href="#"
                                         aria-current="page"
                                         className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -218,10 +313,10 @@ export default function Order() {
                                         className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                                     >
                                         10
-                                    </a>
+                                    </a> */}
                                     <a
                                         href="#"
-                                        className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                        className="ml-[10px] relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                                     >
                                         <span className="sr-only">Next</span>
                                         <svg
