@@ -17,7 +17,7 @@ import {
 } from 'recharts';
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/navigation';
-import {  getUser } from '@/services/user';
+import { getUser } from '@/services/user';
 export default function Home({
     children,
 }: {
@@ -38,7 +38,7 @@ export default function Home({
                 if (dataUser && dataUser._id) {
                     dispatch(setLoggedIn(true))
                 } else {
-                router.replace('/login')
+                    router.replace('/login')
 
                 }
             } catch (error) {
