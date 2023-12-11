@@ -16,19 +16,19 @@ export default function ManagerLayout({
     const router = useRouter()
     const dispatch = useAppDispatch()
     const token: string = Cookies.get('access_token_seller')
-    useEffect(() => {
-        const checkLogin = async () => {
-            try {
-                const dataUser = await getUser(token)
-                if (dataUser && dataUser._id) {
-                    dispatch(fetchUser(token))
-                }
-            } catch (error) {
-                router.replace('/login')
-            }
-        }
-        checkLogin()
-    }, [token])
+    // useEffect(() => {
+    //     const checkLogin = async () => {
+    //         try {
+    //             const dataUser = await getUser(token)
+    //             if (dataUser && dataUser._id) {
+    //                 dispatch(fetchUser(token))
+    //             }
+    //         } catch (error) {
+    //             router.replace('/login')
+    //         }
+    //     }
+    //     checkLogin()
+    // }, [token])
     return (
         <div>
             {children}

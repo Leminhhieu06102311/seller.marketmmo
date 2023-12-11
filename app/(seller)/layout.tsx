@@ -24,7 +24,7 @@ export default function ManagerLayout({
           dispatch(fetchUser(token))
         }
       } catch (error) {
-        router.replace('/login')
+        // router.replace('/login')
       }
     }
     checkLogin()
