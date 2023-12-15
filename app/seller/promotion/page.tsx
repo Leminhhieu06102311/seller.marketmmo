@@ -1,6 +1,7 @@
 "use client"
 import React, { SetStateAction, useState } from 'react'
 import Image from 'next/image';
+import Link from 'next/link';
 export default function Promotion() {
   const tabs = [
     {
@@ -103,7 +104,7 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <button className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
+                  <Link href="/create" className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
                 </div>
               </div>
             </div>

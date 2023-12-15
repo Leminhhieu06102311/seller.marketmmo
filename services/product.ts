@@ -57,7 +57,6 @@ export async function editProduct(name: string, categories: string, price: numbe
     return res
 }
 export async function getCategories() {
-    const res = await api.get(`/categories`)
-
+    const res = await api.get(`/categories`)    
     return res.data.data
 }

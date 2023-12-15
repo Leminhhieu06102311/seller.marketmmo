@@ -12,7 +12,7 @@ export default function Order() {
     const [historiesOrder, setHistoriesOrder] = useState<HistoryOrder[]>([])
     const [page, setPage] = useState(1)
     const [searchTerm, setSearchTerm] = useState('')
-    const token = Cookies.get('access_token_seller')
+    const token = Cookies.get('token')
     useEffect(() => {
         const getHistoriesOrder = async () => {
             const res = await fetchHistoriesOrder(token, status, page)
