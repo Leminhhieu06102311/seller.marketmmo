@@ -1,18 +1,21 @@
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getUser } from "@/services/user";
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import Cookies from 'js-cookie'
-interface userState {
+import Cookies from "js-cookie";
+
+interface UserState {
   name: string;
   id: string;
-  access_token: string,
-  isLoggedIn: boolean,
+  access_token: string;
+  isLoggedIn: boolean;
+  roleType: string;
 }
 
-export const initialState: userState = {
+export const initialState: UserState = {
   name: "",
   id: "",
-  access_token: '',
-  isLoggedIn: false
+  access_token: "",
+  isLoggedIn: false,
+  roleType: "",
 };
 
 export const userSlice = createSlice({
@@ -20,28 +23,31 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setLoggedIn: (state, action: PayloadAction<boolean>) => {
-      state.isLoggedIn = action.payload
+      state.isLoggedIn = action.payload;
     },
-
+    setRoleType: (state, action: PayloadAction<string>) => {
+      state.roleType = action.payload;
+    },
   },
   extraReducers: (builder) => {
-
     builder.addCase(fetchUser.fulfilled, (state, action) => {
-      state.id = action.payload._id
-      state.name = action.payload.name
-      state.isLoggedIn = true
-    })
+      state.id = action.payload._id;
+      state.name = action.payload.name;
+      state.isLoggedIn = true;
+    });
     builder.addCase(fetchUser.rejected, (state, action) => {
-      console.log('reject')
-    })
-  }
+      console.log("reject");
+    });
+  },
 });
+
 export const fetchUser = createAsyncThunk(
-  'user/fetchUser',
+  "user/fetchUser",
   async (access_token: string, thunkAPI) => {
-    const response: any = await getUser(access_token)
-    return response
+    const response: any = await getUser(access_token);
+    return response;
   }
-)
-export const { setLoggedIn } = userSlice.actions
+);
+
+export const { setLoggedIn, setRoleType } = userSlice.actions;
 export default userSlice.reducer;
