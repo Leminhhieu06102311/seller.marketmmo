@@ -22,7 +22,7 @@ export default function managerProduct() {
     const dispatch = useAppDispatch()
     const [page, setPage] = useState(1)
     const [products, setProducts] = useState<Product[]>()
-    const token = Cookies.get('access_token_seller')
+    const token = Cookies.get('token')
     const [activeTab, setActiveTab] = useState(0);
     const [activeSearchByCate, setActiveSearchByCate] = useState(0)
     const [productId, setProductId] = useState('')
@@ -141,6 +141,9 @@ export default function managerProduct() {
                         <IoIosSearch className="text-lg mr-2 text-gray-400 flex-shrink-0" />
                         <input type="text" placeholder="Search..." className="bg-transparent focus:outline-none w-full" />
                     </div>
+
+
+
                     <button onClick={() => dispatch(showModal(ENUM_NAME_MODAL.ADD_PRODUCT))} className="p-2 flex justify-center items-center bg-primary rounded-lg shadow-md text-white font-semibold text-sm">
                         <MdAdd className="text-xl font-bold" />
                         <span> Thêm sản phẩm</span>

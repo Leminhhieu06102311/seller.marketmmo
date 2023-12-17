@@ -6,8 +6,9 @@ interface UserState {
   name: string;
   id: string;
   access_token: string;
-  isLoggedIn: boolean;
   roleType: string;
+  avatar: string,
+  isLoggedIn: boolean,
 }
 
 export const initialState: UserState = {
@@ -16,6 +17,8 @@ export const initialState: UserState = {
   access_token: "",
   isLoggedIn: false,
   roleType: "",
+  avatar: '',
+  isLoggedIn: false
 };
 
 export const userSlice = createSlice({
@@ -34,6 +37,10 @@ export const userSlice = createSlice({
       state.id = action.payload._id;
       state.name = action.payload.name;
       state.isLoggedIn = true;
+      state.id = action.payload._id
+      state.avatar = action.payload.avatar
+      state.name = action.payload.name
+      state.isLoggedIn = true
     });
     builder.addCase(fetchUser.rejected, (state, action) => {
       console.log("reject");
