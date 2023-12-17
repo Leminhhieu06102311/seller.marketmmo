@@ -39,7 +39,6 @@ export default function Home({
                     dispatch(setLoggedIn(true))
                 } else {
                     router.replace('/login')
-
                 }
             } catch (error) {
                 console.log(error)
