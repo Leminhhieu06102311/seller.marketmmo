@@ -18,7 +18,7 @@ export const initialState: UserState = {
   isLoggedIn: false,
   roleType: "",
   avatar: '',
-  isLoggedIn: false
+  // isLoggedIn: false
 };
 
 export const userSlice = createSlice({
