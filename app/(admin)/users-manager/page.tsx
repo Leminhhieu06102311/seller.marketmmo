@@ -16,6 +16,7 @@ import UsersManagerLoader from "./Loader/users-managerLoader";
 export default function UsersManager() {
   const [modals, setModals] = useState<string[]>([]);
   const [modalsDelete, setModalsDelete] = useState<string[]>([]);
+  const [ErrDelete, setErrDelete] = useState<string[]>([]);
   const [modalsErr, setModalsErr] = useState<string[]>([]);
   const [user, setUser] = useState<User[] | undefined>([]);
   const [isReversed, setIsReversed] = useState(false);
@@ -77,30 +78,36 @@ export default function UsersManager() {
   const openModalDelete = (modalId: string) => {
     setModalsDelete([...modalsDelete, modalId]);
   };
-
+  const openErrDelete = (modalId: string) => {
+    setErrDelete([...ErrDelete, modalId]);
+  };
+  const closeErrDelete = (modalId: string) => {
+    setErrDelete(ErrDelete.filter((id) => id !== modalId));
+  };
   const closeModal = (modalId: string) => {
     setModals(modals.filter((id) => id !== modalId));
   };
   const closeModalDelete = (modalId: string) => {
     setModalsDelete(modalsDelete.filter((id) => id !== modalId));
   };
-  const hanldeDelete = async (idUser: string) => {
-    toast.promise(DeleteUser(idUser, token), {
+  const StatusBan = "True";
+  const hanldeDelete = async (idUser: string, status: string) => {
+    toast.promise(DeleteUser(idUser, status, token), {
       pending: {
         render: () => {
-          return <div>Đang xóa User</div>;
+          return <div>Đang banned User</div>;
         },
       },
       success: {
         render: async () => {
           setUser(user?.filter((item) => item._id !== idUser));
           toast.dismiss(); // Đóng toast hiển thị xóa User
-          return <div>Xoá User thành công</div>;
+          return <div>Banned User thành công</div>;
         },
       },
       error: {
         render: () => {
-          return <div>Lỗi khi xóa User. Thử lại sau!</div>;
+          return <div>Lỗi khi banned User. Thử lại sau!</div>;
         },
       },
     });
@@ -462,13 +469,25 @@ export default function UsersManager() {
                                   >
                                     <CiEdit />
                                   </button>
-                                  <button
-                                    className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] "
-                                    // onClick={() => hanldeDelete(users._id)}
-                                    onClick={() => openModalDelete(users._id)}
-                                  >
-                                    <MdDeleteForever />
-                                  </button>
+                                  {users.role ===
+                                    ENUM_ROLE_TYPE.ADMINISTRATION && (
+                                    <button
+                                      className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] "
+                                      onClick={() => openErrDelete(users._id)}
+                                    >
+                                      <MdDeleteForever />
+                                    </button>
+                                  )}
+                                  {users.role !==
+                                    ENUM_ROLE_TYPE.ADMINISTRATION && (
+                                    <button
+                                      className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] "
+                                      // onClick={() => hanldeDelete(users._id)}
+                                      onClick={() => openModalDelete(users._id)}
+                                    >
+                                      <MdDeleteForever />
+                                    </button>
+                                  )}
                                 </th>
                               </tr>
                             </>
@@ -732,6 +751,68 @@ export default function UsersManager() {
                 ))}
                 {displayedUsers?.map((users) => (
                   <>
+                    {ErrDelete.includes(users._id) && (
+                      <div className="modal">
+                        <div className="modal-content">
+                          <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div
+                              className="fixed inset-0 bg-[#0a1e4266] opacity-50"
+                              onClick={() => closeErrDelete(users._id)}
+                            ></div>
+                            <div className="bg-white py-4 px-10 z-50 w-[400px] h-full md:h-auto md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528">
+                              <div className=" w-full flex justify-between mb-5">
+                                <h2 className="font-semibold text-xl"></h2>
+                                <button
+                                  onClick={() => closeErrDelete(users._id)}
+                                >
+                                  {" "}
+                                  <IoMdClose className="text-2xl text-gray-200" />
+                                </button>
+                              </div>
+                              <div>
+                                <h2 className="font-semibold text-xl text-center">
+                                  Không thể Banned Admin
+                                </h2>
+                                <div className="pt-4 flex justify-center">
+                                  <svg
+                                    width="22"
+                                    height="20"
+                                    viewBox="0 0 22 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M11 0C11.3632 0 11.6978 0.196892 11.8742 0.514357L21.8742 18.5144C22.0462 18.8241 22.0416 19.2017 21.8619 19.5071C21.6822 19.8125 21.3543 20 21 20H1C0.64568 20 0.317815 19.8125 0.138129 19.5071C-0.0415561 19.2017 -0.0462301 18.8241 0.125843 18.5144L10.1258 0.514357C10.3022 0.196892 10.6368 0 11 0ZM2.69951 18H19.3005L11 3.05913L2.69951 18ZM11 7C11.5523 7 12 7.44772 12 8V12C12 12.5523 11.5523 13 11 13C10.4477 13 10 12.5523 10 12V8C10 7.44772 10.4477 7 11 7Z"
+                                      fill="#FF0000"
+                                    />
+                                  </svg>
+                                </div>
+                                <div className="py-4">
+                                  <p className="text-sm font-regular text-center">
+                                    Chỉ có thể Banned User hoặc Seller!
+                                    <br />
+                                  </p>
+                                </div>
+                                <div className="flex justify-center">
+                                  <button
+                                    onClick={() => closeErrDelete(users._id)}
+                                    className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
+                                  >
+                                    Đã hiểu
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ))}
+                {displayedUsers?.map((users) => (
+                  <>
                     {modalsErr.includes(users._id) && (
                       <div className="modal">
                         <div className="modal-content">
@@ -911,7 +992,9 @@ export default function UsersManager() {
                                     Huỷ
                                   </button>
                                   <button
-                                    onClick={() => hanldeDelete(users._id)}
+                                    onClick={() =>
+                                      hanldeDelete(users._id, StatusBan)
+                                    }
                                     className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
                                   >
                                     Xóa
@@ -982,7 +1065,9 @@ export default function UsersManager() {
                                     Huỷ
                                   </button>
                                   <button
-                                    onClick={() => hanldeDelete(users._id)}
+                                    onClick={() =>
+                                      hanldeDelete(users._id, StatusBan)
+                                    }
                                     className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
                                   >
                                     Xóa

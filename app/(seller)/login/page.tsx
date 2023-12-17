@@ -60,7 +60,6 @@ export default function Login() {
             console.log(dataUser.role);
             Cookies.set("access_token_seller", access_token, { expires: 10 });
             router.push("/");
-            // console.log('dmm');
             return "Đăng nhập thành công";
           }  else {
             return "Bạn là người mua nên không thể bán vui lòng đăng kí tài khoản người bán trước khi đăng nhập";

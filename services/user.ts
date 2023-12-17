@@ -67,8 +67,8 @@ export async function editUser(userID: string, role: string) {
   }
 }
 
-export async function DeleteUser(idUser: string, access_token: string) {
-  const res = await api.delete(`/user/delete-user?userId=${idUser}`, {
+export async function DeleteUser(idUser: string,status:string, access_token: string) {
+  const res = await api.delete(`/user/banned-user?userId=${idUser}&status=${status}`, {
       headers: {
           Authorization: 'Bearer ' + access_token
       }
