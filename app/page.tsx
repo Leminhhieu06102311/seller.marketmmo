@@ -20,25 +20,25 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [messageErrorLogin, setMessageErrorLogin] = useState('');
     const [notification, setNotification] = useState(false);
-    useEffect(() => {
-        const checkLogged  = async () => {
-            const token = Cookies.get('token')
-            if (token) {
-                const dataUser = await getUser(token);
-                console.log(dataUser)
-                if (dataUser.role === ENUM_ROLE_TYPE.SELLER) {
-                    router.replace('/seller')
-                    console.log('Logged Seller')
-                    return 
-                } else if (dataUser.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
-                    router.replace('/admin')
-                    console.log('Logged Admin')
-                    return
-                }
-            }
-        }
-        checkLogged()
-    })
+    // useEffect(() => {
+    //     const checkLogged  = async () => {
+    //         const token = Cookies.get('token')
+    //         if (token) {
+    //             const dataUser = await getUser(token);
+    //             console.log(dataUser)
+    //             if (dataUser.role === ENUM_ROLE_TYPE.SELLER) {
+    //                 router.replace('/seller')
+    //                 console.log('Logged Seller')
+    //                 return 
+    //             } else if (dataUser.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
+    //                 router.replace('/admin')
+    //                 console.log('Logged Admin')
+    //                 return
+    //             }
+    //         }
+    //     }
+    //     checkLogged()
+    // })
     const handleEmailChange = useCallback(
         (e: { target: { value: any } }) => {
             const value = e.target.value;
@@ -59,63 +59,63 @@ export default function Login() {
         setShowPassword(!showPassword);
     };
 
-    const handleLogin = async (event: { preventDefault: () => void }) => {
-        event.preventDefault();
-        setMessageErrorLogin('')
-        const expirationTimeInSeconds = 1; // 30 seconds
-        const currentDate = new Date();
-        currentDate.setTime(currentDate.getTime() + (expirationTimeInSeconds * 24 * 60 * 60 * 1000)); // Calculate expiration time in milliseconds
-        toast.promise(loginUser(email, password), {
-            pending: {
-                render() {
-                    return "Đang đăng nhập vui lòng đợi!"
-                },
-            },
-            success: {
-                async render({ data }) {
-                    const { access_token } = data.data
-                    dispatch(fetchUser(access_token))
-                    const dataUser = await getUser(access_token)
-                    if (dataUser.role === ENUM_ROLE_TYPE.SELLER) {
-                        // Set the main cookie with value 'cookieValue' and expiration time of 30 seconds
-                        Cookies.set('token', access_token, { expires: expirationTimeInSeconds });
-                        // Set another cookie 'myCookieExpiration' to store the expiration time
-                        Cookies.set('token_expiration', currentDate.toUTCString(), { expires: expirationTimeInSeconds });
-                        router.push("/seller");
-                        return "Đăng nhập thành công"
-                    } else if (dataUser.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
-                        // Set the main cookie with value 'cookieValue' and expiration time of 30 seconds
-                        Cookies.set('token', access_token, { expires: expirationTimeInSeconds });
-                        // Set another cookie 'myCookieExpiration' to store the expiration time
-                        Cookies.set('token_expiration', currentDate.toUTCString(), { expires: expirationTimeInSeconds });
-                        router.push("/admin");
-                    } else {
-                        return "Bạn là người mua nên không thể bán vui lòng đăng kí tài khoản người bán trước khi đăng nhập"
-                    }
+    // const handleLogin = async (event: { preventDefault: () => void }) => {
+    //     event.preventDefault();
+    //     setMessageErrorLogin('')
+    //     const expirationTimeInSeconds = 1; // 30 seconds
+    //     const currentDate = new Date();
+    //     currentDate.setTime(currentDate.getTime() + (expirationTimeInSeconds * 24 * 60 * 60 * 1000)); // Calculate expiration time in milliseconds
+    //     toast.promise(loginUser(email, password), {
+    //         pending: {
+    //             render() {
+    //                 return "Đang đăng nhập vui lòng đợi!"
+    //             },
+    //         },
+    //         success: {
+    //             async render({ data }) {
+    //                 const { access_token } = data.data
+    //                 dispatch(fetchUser(access_token))
+    //                 const dataUser = await getUser(access_token)
+    //                 if (dataUser.role === ENUM_ROLE_TYPE.SELLER) {
+    //                     // Set the main cookie with value 'cookieValue' and expiration time of 30 seconds
+    //                     Cookies.set('token', access_token, { expires: expirationTimeInSeconds });
+    //                     // Set another cookie 'myCookieExpiration' to store the expiration time
+    //                     Cookies.set('token_expiration', currentDate.toUTCString(), { expires: expirationTimeInSeconds });
+    //                     router.push("/seller");
+    //                     return "Đăng nhập thành công"
+    //                 } else if (dataUser.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
+    //                     // Set the main cookie with value 'cookieValue' and expiration time of 30 seconds
+    //                     Cookies.set('token', access_token, { expires: expirationTimeInSeconds });
+    //                     // Set another cookie 'myCookieExpiration' to store the expiration time
+    //                     Cookies.set('token_expiration', currentDate.toUTCString(), { expires: expirationTimeInSeconds });
+    //                     router.push("/admin");
+    //                 } else {
+    //                     return "Bạn là người mua nên không thể bán vui lòng đăng kí tài khoản người bán trước khi đăng nhập"
+    //                 }
 
-                },
-                // other options
-                icon: "🟢",
-            },
-            error: {
-                render: ({ data }) => {
-                    const error: any = data
-                    if (error.response && error.response.status === 401) {
-                        // Lỗi 401 có nghĩa là "Sai tài khoản hoặc mật khẩu"
-                        setMessageErrorLogin(error.response.data.message)
-                        setNotification(true);
-                        console.log(error);
-                    } else {
-                        setMessageErrorLogin(error.response.data.message)
-                        setNotification(true);
+    //             },
+    //             // other options
+    //             icon: "🟢",
+    //         },
+    //         error: {
+    //             render: ({ data }) => {
+    //                 const error: any = data
+    //                 if (error.response && error.response.status === 401) {
+    //                     // Lỗi 401 có nghĩa là "Sai tài khoản hoặc mật khẩu"
+    //                     setMessageErrorLogin(error.response.data.message)
+    //                     setNotification(true);
+    //                     console.log(error);
+    //                 } else {
+    //                     setMessageErrorLogin(error.response.data.message)
+    //                     setNotification(true);
 
-                        console.error("Lỗi đăng nhập:", error);
-                    }
-                    return <div>{error.response.data.message}</div>
-                }
-            }
-        })
-    };
+    //                     console.error("Lỗi đăng nhập:", error);
+    //                 }
+    //                 return <div>{error.response.data.message}</div>
+    //             }
+    //         }
+    //     })
+    // };
     
     return (
         <section className="flex flex-col flex-1 justify-center w-full  ">
@@ -206,7 +206,7 @@ export default function Login() {
                                 type="submit"
                                 className="rounded-full bg-primary text-white font-medium w-full md:text-base mt-5 text-sm h-14  hover:bg-blue-500"
                                 name=""
-                                onClick={handleLogin}
+                                // onClick={handleLogin}
                                 id=""
                             >
                                 Đăng nhập

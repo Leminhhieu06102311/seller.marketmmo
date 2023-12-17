@@ -69,22 +69,22 @@ export default function ManagerLayout({
   const [infoUser, setInforUser] = useState<User>()
   
   
-  useEffect(() => {
-    // Kiểm tra nếu cookie tồn tại
-    const loggedInUser = Cookies.get('token');
-    // check user logged
-    if (loggedInUser) {
-      const expirationDate = new Date(Cookies.get('token_expiration'));
+  // useEffect(() => {
+  //   // Kiểm tra nếu cookie tồn tại
+  //   const loggedInUser = Cookies.get('token');
+  //   // check user logged
+  //   if (loggedInUser) {
+  //     const expirationDate = new Date(Cookies.get('token_expiration'));
       
-      if (Date.now() > expirationDate.getTime()) {
-        Cookies.remove('token');
-        Cookies.remove('token_expiration');
-        router.push('/')
-      } else {
-        dispatch(fetchUser(loggedInUser))
-      }
-    }
-  }, []);
+  //     if (Date.now() > expirationDate.getTime()) {
+  //       Cookies.remove('token');
+  //       Cookies.remove('token_expiration');
+  //       router.push('/')
+  //     } else {
+  //       dispatch(fetchUser(loggedInUser))
+  //     }
+  //   }
+  // }, []);
   
   return (
     <>

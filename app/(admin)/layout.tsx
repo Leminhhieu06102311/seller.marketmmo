@@ -69,43 +69,43 @@ export default function ManagerLayout({
   const [infoUser, setInforUser] = useState<User>()
   const [checkAdmin, setCheckAdmin] = useState(false)
   
-  useEffect(() => {
-    // Kiểm tra nếu cookie tồn tại
-    const loggedInUser = Cookies.get('token');
-    // check user logged
-    if (loggedInUser) {
-      const expirationDate = new Date(Cookies.get('token_expiration'));
+//   useEffect(() => {
+//     // Kiểm tra nếu cookie tồn tại
+//     const loggedInUser = Cookies.get('token');
+//     // check user logged
+//     if (loggedInUser) {
+//       const expirationDate = new Date(Cookies.get('token_expiration'));
       
-      if (Date.now() > expirationDate.getTime()) {
-        Cookies.remove('token');
-        Cookies.remove('token_expiration');
-        router.push('/')
-      } else {
-        dispatch(fetchUser(loggedInUser))
-      }
-    }
-  }, []);
-  useEffect(() => {
-    const fetchUser = async () => {
-      try { 
-        const token = Cookies.get('token')
-        const data = await getUser(token)
-        if (data.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
-            setCheckAdmin(true)
-            setInforUser(data)
-        } else {
-            setCheckAdmin(false)
+//       if (Date.now() > expirationDate.getTime()) {
+//         Cookies.remove('token');
+//         Cookies.remove('token_expiration');
+//         router.push('/')
+//       } else {
+//         dispatch(fetchUser(loggedInUser))
+//       }
+//     }
+//   }, []);
+//   useEffect(() => {
+//     const fetchUser = async () => {
+//       try { 
+//         const token = Cookies.get('token')
+//         const data = await getUser(token)
+//         if (data.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
+//             setCheckAdmin(true)
+//             setInforUser(data)
+//         } else {
+//             setCheckAdmin(false)
             
-        }
-      } catch (error) {
-        router.replace('/')
-      }
-    }
-    fetchUser()
-  }, [])
+//         }
+//       } catch (error) {
+//         router.replace('/')
+//       }
+//     }
+//     fetchUser()
+//   }, [])
   return (
     <>
-      {checkAdmin ?? (
+      {/* {checkAdmin ?? ( */}
         <div className="bg-[#f9fafb] ">
         {searchModallOpen ? null : (
           <header className=" flex flex-col box-border fixed top-0 left-auto right-0 text-[rgb(255, 255, 255)] shadow-none h-[80px] z-50 backdrop-blur-[50px] bg-[rgba(249, 250, 251, 0.8)] transition w-full md:w-full lg:w-[calc(100%-281px)] ">
@@ -325,7 +325,7 @@ export default function ManagerLayout({
           </div>
         </div>
   </div >
-      )} 
+    {/* //   )}  */}
     </>
   )
 }

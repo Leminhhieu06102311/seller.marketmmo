@@ -31,15 +31,16 @@ export default function UsersManager() {
   const [isFlag, setIsFlag] = useState(0);
 
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTdhYTk4YzQ5MGMyYzJhYmUzMWVlYjQiLCJlbWFpbCI6Im5ndXllbnZhbnRlbzEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MDI3OTA4NjksImV4cCI6MTcwMjgyNzQ2OX0.vMSxLLdAymuRzTTjOTHAv0lUIbEMCWCt7eguktvxoJ8";
+  const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTdhYTk4YzQ5MGMyYzJhYmUzMWVlYjQiLCJlbWFpbCI6Im5ndXllbnZhbnRlbzEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MDI3OTA4NjksImV4cCI6MTcwMjgyNzQ2OX0.vMSxLLdAymuRzTTjOTHAv0lUIbEMCWCt7eguktvxoJ8";
 
   useEffect(() => {
     const getUser = async () => {
       const res = await getUserManager();
       setUser(res);
       setLoadingPage(false);
-      setCountUser(res.length);
+      setCountUser(res);
+      console.log(res);
+      
     };
     getUser();
   }, []);
@@ -198,7 +199,6 @@ export default function UsersManager() {
         <UsersManagerLoader />
       ) : (
         <>
-          {" "}
           <div className="p-6 max-w-[1536px] w-full m-auto">
             <div className="mb-3">
               <h1 className="font-bold text-lg">Quản lí người dùng</h1>
@@ -216,7 +216,6 @@ export default function UsersManager() {
                   />
                 </div>
                 <div className="flex items-center gap-x-4">
-                  {" "}
                   {searchTerm.length > 0 ? (
                     (searchResults ?? []).length > 0 ? (
                       <>
@@ -230,7 +229,6 @@ export default function UsersManager() {
                       </>
                     ) : (
                       <>
-                        {" "}
                         <div className="text-sm text-gray-700">
                           Tìm thấy
                           <span className="font-bold mx-1">{totalResults}</span>
@@ -267,14 +265,11 @@ export default function UsersManager() {
                       <TRUserManagerLoader />
                     ) : (
                       <>
-                        {" "}
                         {searchTerm.length > 0 ? (
                           (searchResults ?? []).length > 0 ? (
                             searchResults?.map((users) => (
                               <>
-                                {" "}
                                 <tr className="bg-white border-t hover:bg-gray-50 cursor-pointer">
-                                  {" "}
                                   <td
                                     onClick={() => handleButtonClick(users._id)}
                                     className="p-4"
@@ -370,7 +365,6 @@ export default function UsersManager() {
                             // Code to display "No data found" message
                             <>
                               <tr className="bg-white border-t hover:bg-gray-50 cursor-pointer">
-                                {" "}
                                 <td className="p-4"></td>
                                 <td className="p-4 text-sm"></td>
                                 <td className="p-4 text-sm"></td>
@@ -386,9 +380,7 @@ export default function UsersManager() {
                         ) : (
                           displayedUsers?.map((users) => (
                             <>
-                              {" "}
                               <tr className="bg-white border-t hover:bg-gray-50 cursor-pointer">
-                                {" "}
                                 <td
                                   onClick={() => handleButtonClick(users._id)}
                                   className="p-4"
@@ -513,7 +505,6 @@ export default function UsersManager() {
                                   Quản lí thông tin người dùng
                                 </h2>
                                 <button onClick={() => closeModal(users._id)}>
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -569,7 +560,6 @@ export default function UsersManager() {
                                   </label>
                                   <label className="block mt-1">
                                     <div className="flex gap-x-3">
-                                      {" "}
                                       <span className="sr-only">
                                         Select Role
                                       </span>
@@ -639,7 +629,6 @@ export default function UsersManager() {
                                   Quản lí thông tin người dùng
                                 </h2>
                                 <button onClick={() => closeModal(users._id)}>
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -695,7 +684,6 @@ export default function UsersManager() {
                                   </label>
                                   <label className="block mt-1">
                                     <div className="flex gap-x-3">
-                                      {" "}
                                       <span className="sr-only">
                                         Select Role
                                       </span>
@@ -765,7 +753,6 @@ export default function UsersManager() {
                                 <button
                                   onClick={() => closeErrDelete(users._id)}
                                 >
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -827,7 +814,6 @@ export default function UsersManager() {
                                 <button
                                   onClick={() => closeModalErr(users._id)}
                                 >
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -889,7 +875,6 @@ export default function UsersManager() {
                                 <button
                                   onClick={() => closeModalErr(users._id)}
                                 >
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -951,7 +936,6 @@ export default function UsersManager() {
                                 <button
                                   onClick={() => closeModalDelete(users._id)}
                                 >
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -981,7 +965,7 @@ export default function UsersManager() {
                                     <br />
                                   </p>
                                   <p className="text-sm font-regular text-center">
-                                    Bạn có muốn tiếp tục?{" "}
+                                    Bạn có muốn tiếp tục?
                                   </p>
                                 </div>
                                 <div className="flex justify-center">
@@ -1024,7 +1008,6 @@ export default function UsersManager() {
                                 <button
                                   onClick={() => closeModalDelete(users._id)}
                                 >
-                                  {" "}
                                   <IoMdClose className="text-2xl text-gray-200" />
                                 </button>
                               </div>
@@ -1054,7 +1037,7 @@ export default function UsersManager() {
                                     <br />
                                   </p>
                                   <p className="text-sm font-regular text-center">
-                                    Bạn có muốn tiếp tục?{" "}
+                                    Bạn có muốn tiếp tục?
                                   </p>
                                 </div>
                                 <div className="flex justify-center">
@@ -1105,8 +1088,7 @@ export default function UsersManager() {
                       <></>
                     )
                   ) : (
-                    <>
-                      {" "}
+                    <>          
                       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                         <div>
                           <div className="text-sm text-gray-700">
