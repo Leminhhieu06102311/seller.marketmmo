@@ -1,6 +1,6 @@
 import User from "@/interfaces/user";
 import api from "./api";
-import { HistoryOrder } from "@/interfaces/history_order";
+import { HistoryOrder, HistoryOrderAdmin } from "@/interfaces/history_order";
 
 export async function loginUser(email: string, password: string) {
   const res = await api.post("/auth/login", {
@@ -37,14 +37,13 @@ export async function getUserId(access_token: string, userId: string) {
 }
 
 
-export async function getUserIdOrder(access_token: string) {
-  const res = await api.get(`/order/all-orders?limit=30&page=1`, {
-      headers: {
-          Authorization: 'Bearer ' + access_token
-      }
-  })
-  const { result } = res.data.data
-  return result
+export async function getUserIdOrder(access_token: string, customerId: string): Promise<HistoryOrderAdmin[]> {
+  const res = await api.get(`/order/histories-order-by-user?customer_id=${customerId}&limit=30&page=1`, {
+    headers: {
+      Authorization: 'Bearer ' + access_token
+    }
+  });
+  return res.data.data as HistoryOrderAdmin[]; // Trả về dữ liệu lịch sử đơn hàng
 }
 
 export async function getUserIdPay(access_token: string,userId: string) {

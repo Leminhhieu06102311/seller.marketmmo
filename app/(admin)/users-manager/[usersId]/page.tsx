@@ -21,49 +21,57 @@ export default function UserDetail({
   const [orderHistory, setOrderHistory] = useState<HistoryOrderAdmin[]>([]);
   const [PayHistory, setPayHistory] = useState<TransactionPayAdmin[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTdhYTk4YzQ5MGMyYzJhYmUzMWVlYjQiLCJlbWFpbCI6Im5ndXllbnZhbnRlbzEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MDI3MDE3MjYsImV4cCI6MTcwMjczODMyNn0.05wrnXR8JMN5rLUo0mi-M4MOy71_4uSknj6I9MlEdrw`;
 
-
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTdhYTk4YzQ5MGMyYzJhYmUzMWVlYjQiLCJlbWFpbCI6Im5ndXllbnZhbnRlbzEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MDI3OTA4NjksImV4cCI6MTcwMjgyNzQ2OX0.vMSxLLdAymuRzTTjOTHAv0lUIbEMCWCt7eguktvxoJ8";
   useEffect(() => {
     const fetchUser = async () => {
-        const userData = await getUserId(token, creatorId);
-        setUser(userData);
-
+      const userData = await getUserId(token, creatorId);
+      setUser(userData);
     };
-    const getUserOrder = async () => {
-      const res = await getUserIdOrder(token);
-      setOrderHistory(res);
-      console.log(res);
-    };
-    const getUserPay = async () => {
-      const res2 = await getUserIdPay(token, creatorId);
-      setPayHistory(res2);
-      console.log(res2);
-    };
-    getUserOrder();
-    getUserPay();
     fetchUser();
   }, [creatorId]);
   useEffect(() => {
-    const filterOrderHistory = () => {
-      const filteredOrders = orderHistory.filter(
-        (order) => order.user._id === creatorId
-      );
-      setOrderHistory(filteredOrders);
-      setIsLoading(true);
-      console.log(filteredOrders);
+    const getUserOrder = async () => {
+      const res = await getUserIdOrder(token, creatorId);
+      setOrderHistory(res);
+      console.log(res);
     };
+    getUserOrder();
+  }, [creatorId]);
+
+  useEffect(() => {
+    const getUserPay = async () => {
+      const res2 = await getUserIdPay(token, creatorId);
+      setPayHistory(res2);
+      // console.log(res2);
+    };
+
+    getUserPay();
+  }, [creatorId]);
+
+  // useEffect(() => {
+  //   const filterOrderHistory = () => {
+  //     const filteredOrders = orderHistory.filter(
+  //       (order) => order.user === creatorId
+  //     );
+  //     // setPayHistory(filteredOrders);
+  //     setIsLoading(true);
+  //     console.log(filteredOrders);
+  //   };
+  //   filterOrderHistory();
+  // }, [creatorId]);
+  useEffect(() => {
     const filterPayHistory = () => {
       const filteredPay = PayHistory.filter(
         (pay) => pay.receiver._id === creatorId
       );
       setPayHistory(filteredPay);
       setIsLoading(true);
-      console.log(filteredPay);
+      // console.log(filteredPay);
     };
     filterPayHistory();
-    filterOrderHistory();
-  }, [creatorId, orderHistory, PayHistory]);
+  }, [creatorId]);
 
   return (
     <div className="p-6 max-w-[1536px] w-full m-auto">
@@ -184,8 +192,8 @@ export default function UserDetail({
             <div className="overflow-auto scroll-smooth h-5/6 relative">
               {user?.role === ENUM_ROLE_TYPE.ADMINISTRATION && (
                 <div className="py-2 text-center text-md text-slate-900 font-medium flex justify-center mt-10 pt-10">
-                Không có nội dung để hiển thị
-              </div>
+                  Không có nội dung để hiển thị
+                </div>
               )}
               {user?.role === ENUM_ROLE_TYPE.CUSTOMER && (
                 <table className="table-auto border-collapse w-full">
@@ -211,7 +219,7 @@ export default function UserDetail({
                     ) : (
                       <>
                         {" "}
-                        {orderHistory.length === 0 ? (
+                        {orderHistory?.length === 0 ? (
                           <tr>
                             <td
                               rowSpan={4}
@@ -224,7 +232,7 @@ export default function UserDetail({
                             </td>
                           </tr>
                         ) : (
-                          orderHistory.map(
+                          orderHistory?.map(
                             (order: HistoryOrderAdmin, index: number) => (
                               <tr className="border-y py-2">
                                 <td className="py-2 text-center">
@@ -284,8 +292,8 @@ export default function UserDetail({
                         {PayHistory.length === 0 ? (
                           <tr>
                             <td
-                              rowSpan={4}
-                              colSpan={4}
+                              rowSpan={5}
+                              colSpan={5}
                               className="py-2 text-center text-md text-slate-900 font-medium"
                             >
                               <div className="flex justify-center">

@@ -2,7 +2,7 @@
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { IoIosSearch } from "react-icons/io";
 import { IoFilterOutline } from "react-icons/io5";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import Cookies from "js-cookie";
 import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { DeleteUser, editUser, getUserManager } from "@/services/user";
@@ -16,6 +16,7 @@ import UsersManagerLoader from "./Loader/users-managerLoader";
 export default function UsersManager() {
   const [modals, setModals] = useState<string[]>([]);
   const [modalsDelete, setModalsDelete] = useState<string[]>([]);
+  const [modalsErr, setModalsErr] = useState<string[]>([]);
   const [user, setUser] = useState<User[] | undefined>([]);
   const [isReversed, setIsReversed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +30,8 @@ export default function UsersManager() {
   const [isFlag, setIsFlag] = useState(0);
 
   const router = useRouter();
-  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTdhYTk4YzQ5MGMyYzJhYmUzMWVlYjQiLCJlbWFpbCI6Im5ndXllbnZhbnRlbzEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MDI1MzgwMzksImV4cCI6MTcwMjU3NDYzOX0.jgrN6a66XQuGnFx_HkNc3Z4aampzonC9XcBm66jpM6c`;
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTdhYTk4YzQ5MGMyYzJhYmUzMWVlYjQiLCJlbWFpbCI6Im5ndXllbnZhbnRlbzEyM0BnbWFpbC5jb20iLCJpYXQiOjE3MDI3OTA4NjksImV4cCI6MTcwMjgyNzQ2OX0.vMSxLLdAymuRzTTjOTHAv0lUIbEMCWCt7eguktvxoJ8";
 
   useEffect(() => {
     const getUser = async () => {
@@ -60,9 +62,17 @@ export default function UsersManager() {
       router.push(`/users-manager/${selectedUser._id}`);
     }
   };
-
-  const openModal = (modalId: string) => {
-    setModals([...modals, modalId]);
+  const closeModalErr = (modalId: string) => {
+    setModalsErr(modalsErr.filter((id) => id !== modalId));
+  };
+  const openModal = (modalId: string, roleType: string) => {
+    if (roleType === ENUM_ROLE_TYPE.ADMINISTRATION) {
+      setModalsErr([...modalsErr, modalId]);
+    } else if (roleType === ENUM_ROLE_TYPE.SELLER) {
+      setModalsErr([...modalsErr, modalId]);
+    } else {
+      setModals([...modals, modalId]);
+    }
   };
   const openModalDelete = (modalId: string) => {
     setModalsDelete([...modalsDelete, modalId]);
@@ -331,14 +341,16 @@ export default function UsersManager() {
                                   </td>
                                   <th className="text-start p-4 relative">
                                     <button
-                                      onClick={() => openModal(users._id)}
+                                      onClick={() =>
+                                        openModal(users._id, users.role)
+                                      }
                                       className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 "
                                     >
                                       <CiEdit />
                                     </button>
+
                                     <button
                                       className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] "
-                                      // onClick={() => hanldeDelete(users._id)}
                                       onClick={() => openModalDelete(users._id)}
                                     >
                                       <MdDeleteForever />
@@ -443,7 +455,9 @@ export default function UsersManager() {
                                 </td>
                                 <th className="text-start p-4 relative">
                                   <button
-                                    onClick={() => openModal(users._id)}
+                                    onClick={() =>
+                                      openModal(users._id, users.role)
+                                    }
                                     className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 "
                                   >
                                     <CiEdit />
@@ -464,6 +478,132 @@ export default function UsersManager() {
                     )}
                   </tbody>
                 </table>
+                {searchResults?.map((users) => (
+                  <>
+                    {modals.includes(users._id) && (
+                      <div className="modal">
+                        <div className="modal-content">
+                          <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div
+                              className="fixed inset-0 bg-[#0a1e4266] opacity-50"
+                              onClick={() => closeModal(users._id)}
+                            ></div>
+                            <div className="bg-white p-4 z-50 w-full h-full md:h-auto  md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528">
+                              <div className=" w-full flex justify-between mb-5">
+                                <h2 className="font-semibold text-xl">
+                                  Quản lí thông tin người dùng
+                                </h2>
+                                <button onClick={() => closeModal(users._id)}>
+                                  {" "}
+                                  <IoMdClose className="text-2xl text-gray-200" />
+                                </button>
+                              </div>
+                              <div>
+                                <div className="flex flex-col mb-2">
+                                  <label className="text-sm font-semibold">
+                                    Username
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={users.username}
+                                    className="mt-1 w-full px-3 py-2 focus:outline-primary"
+                                    disabled
+                                  />
+                                </div>
+                                <div className="flex flex-col mb-2">
+                                  <label className="text-sm font-semibold">
+                                    Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={users.name}
+                                    disabled
+                                    className="mt-1 w-full px-3 py-2  focus:outline-primary"
+                                  />
+                                </div>
+                                <div className="flex flex-col mb-2">
+                                  <label className="text-sm font-semibold">
+                                    Status
+                                  </label>
+                                  <label className="relative inline-flex items-center cursor-pointer">
+                                    {users.isFlag !== 0 && (
+                                      <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        disabled
+                                      />
+                                    )}
+                                    {users.isFlag === 0 && (
+                                      <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked
+                                        disabled
+                                      />
+                                    )}
+                                    <div className="w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-gray-500" />
+                                  </label>
+                                </div>
+                                <div className="mb-2">
+                                  <label className="text-sm font-semibold">
+                                    Role
+                                  </label>
+                                  <label className="block mt-1">
+                                    <div className="flex gap-x-3">
+                                      {" "}
+                                      <span className="sr-only">
+                                        Select Role
+                                      </span>
+                                      <span className="sr-only text-sm text-red-500">
+                                        *chỉ có thể chuyển từ người dùng sang
+                                        người bán
+                                      </span>
+                                    </div>
+                                    <select
+                                      id="countries"
+                                      onChange={handleSelectChange}
+                                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:outline-none hover:border-primary rounded-lg focus:ring-blue-50 focus:border-blue-50 block w-full p-2.5 "
+                                    >
+                                      {users.role ===
+                                        ENUM_ROLE_TYPE.CUSTOMER && (
+                                        <>
+                                          <option
+                                            selected
+                                            value="651a93c59df8ccec8945a68f"
+                                          >
+                                            User
+                                          </option>
+                                          <option value="651a93d79df8ccec8945a690">
+                                            Seller
+                                          </option>
+                                        </>
+                                      )}
+                                    </select>
+                                  </label>
+                                </div>
+
+                                <div className="flex justify-end">
+                                  <button
+                                    onClick={() => closeModal(users._id)}
+                                    className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2"
+                                  >
+                                    Huỷ
+                                  </button>
+                                  <button
+                                    onClick={() => handleEdit(users._id)}
+                                    className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
+                                  >
+                                    Lưu
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ))}
                 {displayedUsers?.map((users) => (
                   <>
                     {modals.includes(users._id) && (
@@ -562,58 +702,6 @@ export default function UsersManager() {
                                           <option value="651a93d79df8ccec8945a690">
                                             Seller
                                           </option>
-                                          <option
-                                            value="651a93e79df8ccec8945a691"
-                                            disabled
-                                          >
-                                            Admin
-                                          </option>
-                                        </>
-                                      )}
-                                      {users.role ===
-                                        ENUM_ROLE_TYPE.ADMINISTRATION && (
-                                        <>
-                                          <option
-                                            value="651a93c59df8ccec8945a68f"
-                                            disabled
-                                          >
-                                            User
-                                          </option>
-                                          <option
-                                            value="651a93d79df8ccec8945a690"
-                                            disabled
-                                          >
-                                            Seller
-                                          </option>
-                                          <option
-                                            value="651a93e79df8ccec8945a691"
-                                            selected
-                                            disabled
-                                          >
-                                            Admin
-                                          </option>
-                                        </>
-                                      )}
-                                      {users.role === ENUM_ROLE_TYPE.SELLER && (
-                                        <>
-                                          <option
-                                            value="651a93c59df8ccec8945a68f"
-                                            disabled
-                                          >
-                                            User
-                                          </option>
-                                          <option
-                                            selected
-                                            value="651a93d79df8ccec8945a690"
-                                          >
-                                            Seller
-                                          </option>
-                                          <option
-                                            value="651a93e79df8ccec8945a691"
-                                            disabled
-                                          >
-                                            Admin
-                                          </option>
                                         </>
                                       )}
                                     </select>
@@ -632,6 +720,201 @@ export default function UsersManager() {
                                     className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
                                   >
                                     Lưu
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ))}
+                {displayedUsers?.map((users) => (
+                  <>
+                    {modalsErr.includes(users._id) && (
+                      <div className="modal">
+                        <div className="modal-content">
+                          <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div
+                              className="fixed inset-0 bg-[#0a1e4266] opacity-50"
+                              onClick={() => closeModalDelete(users._id)}
+                            ></div>
+                            <div className="bg-white py-4 px-10 z-50 w-[400px] h-full md:h-auto md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528">
+                              <div className=" w-full flex justify-between mb-5">
+                                <h2 className="font-semibold text-xl"></h2>
+                                <button
+                                  onClick={() => closeModalErr(users._id)}
+                                >
+                                  {" "}
+                                  <IoMdClose className="text-2xl text-gray-200" />
+                                </button>
+                              </div>
+                              <div>
+                                <h2 className="font-semibold text-xl text-center">
+                                  Không thể đổi quyền
+                                </h2>
+                                <div className="pt-4 flex justify-center">
+                                  <svg
+                                    width="22"
+                                    height="20"
+                                    viewBox="0 0 22 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M11 0C11.3632 0 11.6978 0.196892 11.8742 0.514357L21.8742 18.5144C22.0462 18.8241 22.0416 19.2017 21.8619 19.5071C21.6822 19.8125 21.3543 20 21 20H1C0.64568 20 0.317815 19.8125 0.138129 19.5071C-0.0415561 19.2017 -0.0462301 18.8241 0.125843 18.5144L10.1258 0.514357C10.3022 0.196892 10.6368 0 11 0ZM2.69951 18H19.3005L11 3.05913L2.69951 18ZM11 7C11.5523 7 12 7.44772 12 8V12C12 12.5523 11.5523 13 11 13C10.4477 13 10 12.5523 10 12V8C10 7.44772 10.4477 7 11 7Z"
+                                      fill="#FF0000"
+                                    />
+                                  </svg>
+                                </div>
+                                <div className="py-4">
+                                  <p className="text-sm font-regular text-center">
+                                    Chỉ có thể đổi quyền của User!
+                                    <br />
+                                  </p>
+                                </div>
+                                <div className="flex justify-center">
+                                  <button
+                                    onClick={() => closeModalErr(users._id)}
+                                    className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
+                                  >
+                                    Đã hiểu
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ))}
+                {searchResults?.map((users) => (
+                  <>
+                    {modalsErr.includes(users._id) && (
+                      <div className="modal">
+                        <div className="modal-content">
+                          <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div
+                              className="fixed inset-0 bg-[#0a1e4266] opacity-50"
+                              onClick={() => closeModalDelete(users._id)}
+                            ></div>
+                            <div className="bg-white py-4 px-10 z-50 w-[400px] h-full md:h-auto md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528">
+                              <div className=" w-full flex justify-between mb-5">
+                                <h2 className="font-semibold text-xl"></h2>
+                                <button
+                                  onClick={() => closeModalErr(users._id)}
+                                >
+                                  {" "}
+                                  <IoMdClose className="text-2xl text-gray-200" />
+                                </button>
+                              </div>
+                              <div>
+                                <h2 className="font-semibold text-xl text-center">
+                                  Không thể đổi quyền
+                                </h2>
+                                <div className="pt-4 flex justify-center">
+                                  <svg
+                                    width="22"
+                                    height="20"
+                                    viewBox="0 0 22 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M11 0C11.3632 0 11.6978 0.196892 11.8742 0.514357L21.8742 18.5144C22.0462 18.8241 22.0416 19.2017 21.8619 19.5071C21.6822 19.8125 21.3543 20 21 20H1C0.64568 20 0.317815 19.8125 0.138129 19.5071C-0.0415561 19.2017 -0.0462301 18.8241 0.125843 18.5144L10.1258 0.514357C10.3022 0.196892 10.6368 0 11 0ZM2.69951 18H19.3005L11 3.05913L2.69951 18ZM11 7C11.5523 7 12 7.44772 12 8V12C12 12.5523 11.5523 13 11 13C10.4477 13 10 12.5523 10 12V8C10 7.44772 10.4477 7 11 7Z"
+                                      fill="#FF0000"
+                                    />
+                                  </svg>
+                                </div>
+                                <div className="py-4">
+                                  <p className="text-sm font-regular text-center">
+                                    Chỉ có thể đổi quyền của User!
+                                    <br />
+                                  </p>
+                                </div>
+                                <div className="flex justify-center">
+                                  <button
+                                    onClick={() => closeModalErr(users._id)}
+                                    className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
+                                  >
+                                    Đã hiểu
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ))}
+                {searchResults?.map((users) => (
+                  <>
+                    {modalsDelete.includes(users._id) && (
+                      <div className="modal">
+                        <div className="modal-content">
+                          <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div
+                              className="fixed inset-0 bg-[#0a1e4266] opacity-50"
+                              onClick={() => closeModalDelete(users._id)}
+                            ></div>
+                            <div className="bg-white py-4 px-10 z-50 w-[400px] h-full md:h-auto md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528">
+                              <div className=" w-full flex justify-between mb-5">
+                                <h2 className="font-semibold text-xl"></h2>
+                                <button
+                                  onClick={() => closeModalDelete(users._id)}
+                                >
+                                  {" "}
+                                  <IoMdClose className="text-2xl text-gray-200" />
+                                </button>
+                              </div>
+                              <div>
+                                <h2 className="font-semibold text-xl text-center">
+                                  Xóa tài khoản
+                                </h2>
+                                <div className="pt-4 flex justify-center">
+                                  <svg
+                                    width="22"
+                                    height="20"
+                                    viewBox="0 0 22 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M11 0C11.3632 0 11.6978 0.196892 11.8742 0.514357L21.8742 18.5144C22.0462 18.8241 22.0416 19.2017 21.8619 19.5071C21.6822 19.8125 21.3543 20 21 20H1C0.64568 20 0.317815 19.8125 0.138129 19.5071C-0.0415561 19.2017 -0.0462301 18.8241 0.125843 18.5144L10.1258 0.514357C10.3022 0.196892 10.6368 0 11 0ZM2.69951 18H19.3005L11 3.05913L2.69951 18ZM11 7C11.5523 7 12 7.44772 12 8V12C12 12.5523 11.5523 13 11 13C10.4477 13 10 12.5523 10 12V8C10 7.44772 10.4477 7 11 7Z"
+                                      fill="#FF0000"
+                                    />
+                                  </svg>
+                                </div>
+                                <div className="py-4">
+                                  <p className="text-sm font-regular text-center">
+                                    Hành động này sẽ không thể hoàn tác
+                                    <br />
+                                  </p>
+                                  <p className="text-sm font-regular text-center">
+                                    Bạn có muốn tiếp tục?{" "}
+                                  </p>
+                                </div>
+                                <div className="flex justify-center">
+                                  <button
+                                    onClick={() => closeModalDelete(users._id)}
+                                    className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2"
+                                  >
+                                    Huỷ
+                                  </button>
+                                  <button
+                                    onClick={() => hanldeDelete(users._id)}
+                                    className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2"
+                                  >
+                                    Xóa
                                   </button>
                                 </div>
                               </div>

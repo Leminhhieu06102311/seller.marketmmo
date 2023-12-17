@@ -15,48 +15,11 @@ export interface HistoryOrder {
 export interface HistoryOrderAdmin {
   promotion: null | any;
   _id: string;
-  user: {
-    balance: null | any;
-    bank: null | any;
-    _id: string;
-    username: string;
-    website: null | any;
-    isFlag: number;
-    name: string;
-    bio: string;
-    email: string;
-    role: string;
-    online: boolean;
-    avatar: string;
-    phone: string;
-    address: string;
-    birthday: string;
-  };
+  user: string;
   product: {
     _id: string;
-    creator: {
-      balance: null | any;
-      bank: null | any;
-      _id: string;
-      username: string;
-      website: null | any;
-      isFlag: number;
-      name: string;
-      bio: string;
-      email: string;
-      role: string;
-      online: boolean;
-      avatar: string;
-      phone: string;
-      address: string;
-      birthday: string;
-    };
-    categories: {
-      _id: string;
-      name: string;
-      description: string;
-      slug: string;
-    };
+    creator: string;
+    categories: string;
     quantity: number;
     name: string;
     description: string;
@@ -65,11 +28,11 @@ export interface HistoryOrderAdmin {
     statsSale: boolean;
     pictures: string[];
     slug: string;
-    deletedAt: null | any;
-    accompanyingProducts: ({
+    deletedAt: null | string;
+    accompanyingProducts: Array<{
       name: string;
       price: number;
-    } | null)[];
+    } | null>;
     __v: number;
     createdAt: string;
     updatedAt: string;
