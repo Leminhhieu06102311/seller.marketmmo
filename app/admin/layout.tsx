@@ -26,33 +26,18 @@ interface Links {
 const links: Links[] = [
   {
     name: 'Dashboard',
-    path: '/seller',
+    path: '/admin',
     icon: <AiFillDashboard className="w-6 h-6 mr-4" />,
   },
   {
-    name: 'Sản phẩm',
-    path: '/seller/product-manager',
+    name: 'Quản lí người dùng',
+    path: '/admin/users-manager',
     icon: <FaCartShopping className="w-6 h-6 mr-4" />,
   },
   {
-    name: 'Tài chính',
-    path: '/seller/financial',
+    name: 'Quản lí rút tiền',
+    path: '/admin/transaction-manager',
     icon: <FaCreditCard className="w-6 h-6 mr-4" />,
-  },
-  {
-    name: 'Quản lí đơn hàng',
-    path: '/seller/orders-manager',
-    icon: <FaFileInvoice className="w-6 h-6 mr-4" />,
-  },
-  {
-    name: 'Ưu đãi',
-    path: '/seller/promotion',
-    icon: <FaGift className="w-6 h-6 mr-4" />,
-  },
-  {
-    name: 'Cài đặt',
-    path: '/seller/settings',
-    icon: <IoMdSettings className="w-6 h-6 mr-4" />,
   },
 ];
 export default function ManagerLayout({
@@ -73,7 +58,7 @@ export default function ManagerLayout({
     // Kiểm tra nếu cookie tồn tại
     const loggedInUser = Cookies.get('token');
     // check user logged
-    if (loggedInUser) {
+    if (loggedInUser) {     
       const expirationDate = new Date(Cookies.get('token_expiration'));
       
       if (Date.now() > expirationDate.getTime()) {
@@ -103,9 +88,12 @@ export default function ManagerLayout({
     }
     fetchUser()
   }, [])
+  useEffect(() => {
+    console.log(checkAdmin)
+  }, [checkAdmin] )
   return (
     <>
-      {checkAdmin ?? (
+      {checkAdmin && (
         <div className="bg-[#f9fafb] ">
         {searchModallOpen ? null : (
           <header className=" flex flex-col box-border fixed top-0 left-auto right-0 text-[rgb(255, 255, 255)] shadow-none h-[80px] z-50 backdrop-blur-[50px] bg-[rgba(249, 250, 251, 0.8)] transition w-full md:w-full lg:w-[calc(100%-281px)] ">
@@ -143,7 +131,7 @@ export default function ManagerLayout({
                   {infoUser && (
                     <>
                       <div className="w-10 h-10 overflow-hidden rounded-full">
-                        <Image src={infoUser.avatar} alt="" width={40} height={40} />
+                        {/* <Image src={infoUser.avatar} alt="" width={40} height={40} /> */}
                       </div>
                       <div className="flex items-center ml-4">
                         <h6 className="font-semibold text-[0.875rem text-black">{infoUser?.name}</h6>
