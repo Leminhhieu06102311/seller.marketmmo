@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import {
   getUserId,
@@ -280,16 +279,13 @@ export default function UserDetail({
                                   {order.product.name}
                                 </td>
                                 <td className="py-2 text-sm">
-                                  {format(
-                                    new Date(order.createdAt),
-                                    "dd/MM/yyyy HH:mm:ss"
-                                  )}
+                                {new Date(order.createdAt).toLocaleString("vi-VN")}
                                 </td>
                                 <td className="py-2 text-sm">
                                   {new Intl.NumberFormat("vi-VN", {
                                     style: "currency",
                                     currency: "VND",
-                                  }).format(order.totalPrice)}{" "}
+                                  }).format(order.totalPrice)}
                                 </td>
                               </tr>
                             )
@@ -367,10 +363,8 @@ export default function UserDetail({
                                               {sellerOrder.quantity}
                                             </td>
                                             <td className="py-2 text-sm">
-                                              {format(
-                                                new Date(sellerOrder.createdAt),
-                                                "dd/MM/yyyy HH:mm:ss"
-                                              )}
+                                            {new Date(sellerOrder.createdAt).toLocaleString("vi-VN")}
+
                                             </td>
                                             <td className="py-2 text-sm">
                                               {new Intl.NumberFormat("vi-VN", {
@@ -451,10 +445,8 @@ export default function UserDetail({
                                             }).format(pay.amount)}
                                           </td>
                                           <td className="py-2 text-sm">
-                                            {format(
-                                              new Date(pay.createdAt),
-                                              "dd/MM/yyyy HH:mm:ss"
-                                            )}
+                                          {new Date(pay.createdAt).toLocaleString("vi-VN")}
+
                                           </td>
                                           {pay.status === "Thành công" && (
                                             <td className="py-2 text-sm font-semibold">
