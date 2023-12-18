@@ -54,7 +54,24 @@ export async function getUserIdPay(access_token: string,userId: string) {
   const { result } = res.data.data
   return result
 }
-
+export async function getUserIdDepositPay(access_token: string,userId: string) {
+  const res = await api.get(`/payment?limit=30&page=1&type=N%E1%BA%A1p%20ti%E1%BB%81n&userID=${userId}`, {
+      headers: {
+          Authorization: 'Bearer ' + access_token
+      }
+  })
+  const { result } = res.data.data
+  return result
+}
+export async function getUserIdwithdrawalPay(access_token: string,userId: string) {
+  const res = await api.get(`/payment?limit=30&page=1&type=R%C3%BAt%20ti%E1%BB%81n&userID=${userId}`, {
+      headers: {
+          Authorization: 'Bearer ' + access_token
+      }
+  })
+  const { result } = res.data.data
+  return result
+}
 export async function editUser(userID: string, role: string) {
 
   try {
@@ -83,4 +100,12 @@ export async function getTransactionManagementAdmin(access_token: string) {
   })
   const { result } = res.data.data
   return result
+}
+export async function getSellerIdByOrder(access_token: string,userId: string): Promise<HistoryOrderAdmin[]>  {
+  const res = await api.get(`/order/histories-order-by-user?customer_id=${userId}&limit=30&page=1`, {
+      headers: {
+          Authorization: 'Bearer ' + access_token
+      }
+  })
+  return res.data.data as HistoryOrderAdmin[];
 }
