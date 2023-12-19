@@ -1,12 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://ultimate-implicitly-hound.ngrok-free.app/',
+  baseURL: 'https://fancy-cemetery-production.up.railway.app/',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
-    'accept': '*/*',
-    'ngrok-skip-browser-warning': 'true'
   },
 });
 
