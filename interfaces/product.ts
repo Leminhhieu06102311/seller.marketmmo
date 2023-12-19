@@ -18,6 +18,7 @@ export interface Product {
   updatedAt: string
 }
 
+
 export interface AddProduct {
   name: string,
   categories: string,
@@ -26,3 +27,5 @@ export interface AddProduct {
   quantity: number, 
   description: string, 
 }
+
+export default Product

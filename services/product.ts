@@ -10,7 +10,11 @@ export async function getAllProducts(access_token: string, page: number) {
     const { result } = res.data.data
     return result
 }
-
+export async function getAllProductsByid() {
+    const res = await api.get('/product?limit=30&page=1&sort=CREATED_DATE')
+    const { result } = res.data.data
+    return result
+}
 
 export async function deleteProduct(idProduct: string, access_token: string) {
     const res = await api.delete(`/product?id=${idProduct}`, {

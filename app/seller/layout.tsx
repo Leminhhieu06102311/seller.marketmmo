@@ -105,7 +105,7 @@ export default function ManagerLayout({
                         </button>
                         <button className="inline-flex items-center justify-center p-2 ml-2 w-10 h-10  rounded-full hover:bg-[#63738114] ">
                           <div className="w-full h-full rounded-full overflow-hidden border-[2px solid rgb(249, 250, 251)]">
-                            <Image className="w-full h-full text-center object-cover " src={avatar} alt="" width={40} height={40} />
+                            {/* <Image className="w-full h-full text-center object-cover " src={avatar} alt="" width={40} height={40} /> */}
                           </div>
                         </button>
 
@@ -123,7 +123,7 @@ export default function ManagerLayout({
                     <div className="text-xl font-bold w-full text-center p-7">Market MMO</div>
                     <div className="my-6 mx-5 py-4 px-5 rounded-xl bg-[#919eab1f] flex ">
                     <div className="w-10 h-10 overflow-hidden rounded-full">
-                            <Image src={avatar} alt="" width={40} height={40} />
+                            {/* <Image src={avatar} alt="" width={40} height={40} /> */}
                           </div>
                           <div className="flex items-center ml-4">
                             <h6 className="font-semibold text-[0.875rem text-black">{name}</h6>
@@ -160,7 +160,7 @@ export default function ManagerLayout({
 
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -175,7 +175,7 @@ export default function ManagerLayout({
 
                             <div className='flex items-center '>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -192,7 +192,7 @@ export default function ManagerLayout({
                           <div className='px-6 py-4 hover:bg-gray-50'>
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -206,7 +206,7 @@ export default function ManagerLayout({
                           <div className='px-6 py-4 hover:bg-gray-50'>
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -220,7 +220,7 @@ export default function ManagerLayout({
                           <div className='px-6 py-4 hover:bg-gray-50'>
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -234,7 +234,7 @@ export default function ManagerLayout({
                           <div className='px-6 py-4 hover:bg-gray-50'>
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -248,7 +248,7 @@ export default function ManagerLayout({
                           <div className='px-6 py-4 hover:bg-gray-50'>
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
@@ -262,7 +262,7 @@ export default function ManagerLayout({
                           <div className='px-6 py-4 hover:bg-gray-50'>
                             <div className='flex items-center'>
                               <div className='w-10 h-10 bg-gray-50 p-2 rounded-full overflow-hidden mr-4'>
-                                <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} />
+                                {/* <Image src="/images/promotion/businessman.png" alt="" width={40} height={40} /> */}
                               </div>
                               <div className='text-sm'>
                                 <div className='mb-[2px]'>
