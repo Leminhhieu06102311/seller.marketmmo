@@ -25,15 +25,48 @@ import {
     LineChart,
 } from "recharts";
 import { getDashBoardSeller } from "@/services/dashboard";
+import { fetchAllHistoriesOrder, fetchHistoriesOrder } from "@/services/order";
+import { HistoryOrder } from "@/interfaces/history_order";
 export default function Admin({ }) {
     const token = Cookies.get("token");
     const [dashboard, setDashboard] = useState<DashBoard>();
     const [loadingPage, setLoadingPage] = useState(true);
     const [selectedType, setSelectedType] = useState("Ngày");
+    const [historiesOrder, setHistoriesOrder] = useState<HistoryOrder[]>([])
+    const [page, setPage] = useState(1)
 
     useEffect(() => {
         import("preline");
     }, []);
+
+    useEffect(() => {
+        const getHistoriesOrder = async () => {
+            const res = await fetchAllHistoriesOrder(token, page)
+            setHistoriesOrder(res)
+        }
+        getHistoriesOrder()
+    }, [page])
+
+
+    const sortedHistories = historiesOrder.sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+    });
+
+    const recentSixDays = sortedHistories.slice(0, 6);
+    console.log(recentSixDays);
+
+
+    const currentMonth = new Date().getMonth() + 1;
+
+    const historiesInCurrentMonth = sortedHistories.filter(history => {
+        const historyMonth = new Date(history.createdAt).getMonth() + 1;
+        return historyMonth === currentMonth;
+    });
+
+    console.log(historiesInCurrentMonth);
+
     const data = [
         {
             name: "Page A",
@@ -162,17 +195,10 @@ export default function Admin({ }) {
                 startDate = formattedStartYear;
                 endDate = encodedEndDate;
             }
-            console.log(token);
-            console.log(startDate);
-            console.log(endDate);
-
             const res = await getDashBoardSeller(token, startDate, endDate);
-            console.log(res);
-
-            setDashboard(res);
+            setDashboard(res.data.data);
             setLoadingPage(false);
         };
-
         DashBoard();
     }, [
         selectedType,
