@@ -54,17 +54,10 @@ export async function getUserIdPay(access_token: string,userId: string) {
   const { result } = res.data.data
   return result
 }
-export async function getUserIdDepositPay(access_token: string,userId: string) {
-  const res = await api.get(`/payment?limit=30&page=1&type=N%E1%BA%A1p%20ti%E1%BB%81n&userID=${userId}`, {
-      headers: {
-          Authorization: 'Bearer ' + access_token
-      }
-  })
-  const { result } = res.data.data
-  return result
-}
+
 export async function getUserIdwithdrawalPay(access_token: string,userId: string) {
-  const res = await api.get(`/payment?limit=30&page=1&type=R%C3%BAt%20ti%E1%BB%81n&userID=${userId}`, {
+  const methodWithdrawalPay = "Rút tiền"
+  const res = await api.get(`/payment?limit=30&page=1&type=${methodWithdrawalPay}&userID=${userId}`, {
       headers: {
           Authorization: 'Bearer ' + access_token
       }
