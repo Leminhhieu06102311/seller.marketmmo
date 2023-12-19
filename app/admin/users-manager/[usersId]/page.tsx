@@ -27,6 +27,11 @@ export default function UserDetail({
   const [PayHistory, setPayHistory] = useState<TransactionPayAdmin[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [totalMoneyOrderUser, settotalMoneyOrderUser] = useState(0);
+  const [totalQuanlityOrderUser, SettotalQuanlityOrderUser] = useState(0);
+  const [totalMoneyOrderSeller, settotalMoneyOrderSellerr] = useState(0);
+  const [totalQuanlityOrderSeller, SettotalQuanlityOrderSeller] = useState(0);
+  const [totalMoneywithdrawalPay, settotalMoneywithdrawalPay] = useState(0);
 
   const token = Cookies.get("token");
   useEffect(() => {
@@ -43,7 +48,19 @@ export default function UserDetail({
     };
     getUserOrder();
   }, [creatorId]);
-  
+
+  useEffect(() => {
+    const calculateTotalMoney = () => {
+      const totalPriceSum = orderHistory.reduce(
+        (acc, order) => acc + order.totalPrice,
+        0
+      );
+      settotalMoneyOrderUser(totalPriceSum);
+      SettotalQuanlityOrderUser(orderHistory.length);
+    };
+    calculateTotalMoney();
+  }, [orderHistory]);
+
   const sortedOrderHistory = orderHistory?.sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
@@ -53,23 +70,44 @@ export default function UserDetail({
       const despay = await getUserIdwithdrawalPay(token, creatorId);
       setPaywithdrawalHistory(despay);
     };
-  
+
     getUserIdwithdrawalPaya();
   }, [creatorId]);
-  
+
+  useEffect(() => {
+    const calculateTotalMoney = () => {
+      const totalPriceSum = PaywithdrawalHistory.reduce(
+        (acc, order) => acc + order.amount,
+        0
+      );
+      settotalMoneywithdrawalPay(totalPriceSum);
+    };
+    calculateTotalMoney();
+  }, [PaywithdrawalHistory]);
+
   const sortedPaywithdrawalHistory = PaywithdrawalHistory?.sort((a, b) => {
-    // Sắp xếp theo ngày từ gần nhất đến xa nhất
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
   useEffect(() => {
     const getSellerIdByOrdera = async () => {
       const resSellerOrder = await getSellerIdByOrder(token, creatorId);
       setsellerOrder(resSellerOrder);
-      console.log(resSellerOrder);
     };
     getSellerIdByOrdera();
   }, [creatorId]);
-  
+
+  useEffect(() => {
+    const calculateTotalMoney = () => {
+      const totalPriceSum = sellerOrder.reduce(
+        (acc, order) => acc + order.totalPrice,
+        0
+      );
+      settotalMoneyOrderSellerr(totalPriceSum);
+      SettotalQuanlityOrderSeller(sellerOrder.length);
+    };
+    calculateTotalMoney();
+  }, [sellerOrder]);
+
   const sortedSellerOrder = sellerOrder?.sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
@@ -90,6 +128,108 @@ export default function UserDetail({
   return (
     <div className="p-6 max-w-[1536px] w-full m-auto">
       <h1 className="mb-10 font-bold leading-5">Hi, Welcome back 👋</h1>
+      {user?.role === ENUM_ROLE_TYPE.CUSTOMER && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-7 mb-5">
+          <div className="rounded-xl flex flex-row bg-white text-[#212b36] shadow-md  ">
+            <div className="flex justify-center flex-row w-full py-10 px-6 ">
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  className="m-w-full inline-block"
+                  src="https://www.logolynx.com/images/logolynx/c4/c4e297cf6b1f22c8df0e7d5ef5bf846e.png"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col ml-6">
+                <h6 className="text-lg">Tổng tiền mua hàng</h6>
+                <h1 className="text-lg font-bold">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(totalMoneyOrderUser)}
+                </h1>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-xl flex flex-row bg-white text-[#212b36] shadow-md  ">
+            <div className="flex justify-center flex-row w-full py-10 px-6 ">
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  className="m-w-full inline-block"
+                  src="/images/admin/dashboard/ic_glass_buy.png"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col ml-6">
+                <h6 className="text-lg">Tổng đơn hàng đã mua</h6>
+                <h4 className="text-lg font-bold">
+                  {totalQuanlityOrderUser} đơn hàng
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {user?.role === ENUM_ROLE_TYPE.SELLER && (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-10 mb-5">
+          <div className="rounded-xl flex flex-row bg-white text-[#212b36] shadow-md  ">
+            <div className="flex justify-center flex-row w-full py-10 px-6 ">
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  className="m-w-full inline-block"
+                  src="/images/admin/dashboard/ic_glass_bag.png"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col ml-6">
+                <h6 className="text-lg">Tổng doanh thu</h6>
+                <h4 className="text-lg font-bold">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(totalMoneyOrderSeller)}
+                </h4>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-xl flex flex-row bg-white text-[#212b36] shadow-md  ">
+            <div className="flex justify-center flex-row w-full py-10 px-6 ">
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  className="m-w-full inline-block"
+                  src="/images/admin/dashboard/ic_glass_buy.png"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col ml-6">
+                <h6 className="text-lg">Tổng đơn hàng</h6>
+                <h4 className="text-lg font-bold">
+                  {totalQuanlityOrderSeller} đơn hàng
+                </h4>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-xl flex flex-row bg-white text-[#212b36] shadow-md ">
+            <div className="flex justify-center flex-row w-full py-10 px-6 ">
+              <div className="w-16 h-16 flex-shrink-0">
+                <img
+                  className="m-w-full inline-block"
+                  src="https://www.logolynx.com/images/logolynx/c4/c4e297cf6b1f22c8df0e7d5ef5bf846e.png"
+                  alt=""
+                />
+              </div>
+              <div className="flex flex-col ml-6">
+                <h6 className="text-lg">Tổng số tiền rút </h6>
+                <h4 className="text-lg font-bold">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(totalMoneywithdrawalPay)}
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="w-full bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row lg:flex-row items-start md:items-center lg:items-center justify-between mb-3 ">
         <div className="flex items-center flex-shrink-0 mb-5 mr-0 md:mr-5 md:mb-0 lg:mb-0">
           <div className="flex-shrink-0 w-[100px] h-[100px] overflow-hidden rounded-full mr-5">
@@ -141,7 +281,6 @@ export default function UserDetail({
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         <div className="">
           <div className="p-6 bg-white rounded-xl shadow-lg h-full">
@@ -279,7 +418,9 @@ export default function UserDetail({
                                   {order.product.name}
                                 </td>
                                 <td className="py-2 text-sm">
-                                {new Date(order.createdAt).toLocaleString("vi-VN")}
+                                  {new Date(order.createdAt).toLocaleString(
+                                    "vi-VN"
+                                  )}
                                 </td>
                                 <td className="py-2 text-sm">
                                   {new Intl.NumberFormat("vi-VN", {
@@ -363,8 +504,9 @@ export default function UserDetail({
                                               {sellerOrder.quantity}
                                             </td>
                                             <td className="py-2 text-sm">
-                                            {new Date(sellerOrder.createdAt).toLocaleString("vi-VN")}
-
+                                              {new Date(
+                                                sellerOrder.createdAt
+                                              ).toLocaleString("vi-VN")}
                                             </td>
                                             <td className="py-2 text-sm">
                                               {new Intl.NumberFormat("vi-VN", {
@@ -445,8 +587,9 @@ export default function UserDetail({
                                             }).format(pay.amount)}
                                           </td>
                                           <td className="py-2 text-sm">
-                                          {new Date(pay.createdAt).toLocaleString("vi-VN")}
-
+                                            {new Date(
+                                              pay.createdAt
+                                            ).toLocaleString("vi-VN")}
                                           </td>
                                           {pay.status === "Thành công" && (
                                             <td className="py-2 text-sm font-semibold">
