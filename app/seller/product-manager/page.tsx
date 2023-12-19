@@ -21,7 +21,7 @@ export default function managerProduct() {
     const { id } = useAppSelector((state) => state.user)
     const dispatch = useAppDispatch()
     const [page, setPage] = useState(1)
-    const [products, setProducts] = useState<Prodưuct[]>()
+    const [products, setProducts] = useState<Product[]>()
     const token = Cookies.get('token')
     const [activeTab, setActiveTab] = useState(0);
     const [activeSearchByCate, setActiveSearchByCate] = useState(0)
@@ -36,14 +36,14 @@ export default function managerProduct() {
             setCategories(res)
         }
         getCate()
-        
+
     }, [])
     useEffect(() => {
-       const getAllProduct = async () =>{
+        const getAllProduct = async () => {
             const res = await getAllProducts(token, page)
             setProducts(res)
-       }
-       getAllProduct()
+        }
+        getAllProduct()
     }, [page, activeSearchByCate])
     const hanldeDelete = async (idProduct: string) => {
         toast.promise(deleteProduct(idProduct, token), {
@@ -69,7 +69,7 @@ export default function managerProduct() {
         setProductId(productId)
         dispatch(showModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
     }
-    const hanldeSearchByCate = (cateId : string,index : number) => {
+    const hanldeSearchByCate = (cateId: string, index: number) => {
         setActiveSearchByCate(index)
         const filterProductByCate = products?.filter((product) => product.categories === cateId)
         setProducts(filterProductByCate)
@@ -151,13 +151,13 @@ export default function managerProduct() {
                 </div>
                 <div className="flex gap-2 px-6 pb-4 bg-white">
                     {categories?.map((cate, index) => (
-                        <button type="button" onClick={() => hanldeSearchByCate(cate._id,index)} className={`${activeSearchByCate === index ? 'text-white bg-blue-600' : ''} py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
+                        <button type="button" onClick={() => hanldeSearchByCate(cate._id, index)} className={`${activeSearchByCate === index ? 'text-white bg-blue-600' : ''} py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
                             {cate.name}
                         </button>
                     ))}
                     <button type="button" className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg   text-black bg-slate-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
                         Đặt lại
-                        </button>
+                    </button>
 
                 </div>
                 <AddProduct setProducts={setProducts} />

@@ -1,9 +1,7 @@
 'use client'
 import React, { SetStateAction, useEffect, useState } from 'react'
-import { CiEdit } from 'react-icons/ci';
 import { IoIosSearch, IoMdClose } from 'react-icons/io';
 import { IoFilterOutline } from 'react-icons/io5';
-import { MdDeleteForever } from 'react-icons/md';
 import Cookies from 'js-cookie'
 import { getUser } from '@/services/user';
 import User from '@/interfaces/user';
@@ -17,7 +15,7 @@ export default function Finalcial() {
     const [modals, setModals] = useState<string[]>([]);
     const [isModalWidthDrawOpen, setIsModalWidthDrawOpen] = useState(false);
     const [isModalBankOpen, setIsModalBankOpen] = useState(false);
-    const [withdrawalAmount, setWithdrawalAmount] = useState<number>(1000);
+    const [withdrawalAmount, setWithdrawalAmount] = useState("");
     const [codeBank, setCodeBank] = useState('');
     const [dataUser, setDataUser] = useState<User | null>(null);
     const [history, setHistory] = useState<HistoryWidthDraw[]>()
@@ -41,18 +39,15 @@ export default function Finalcial() {
         setIsModalBankOpen(true);
     }
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const amount = parseInt(e.target.value, 10);
-
-        if (!isNaN(amount)) {
-            setWithdrawalAmount(amount);
-        }
-    };
-
     const handleWithdrawal = () => {
+        const amount = Number(withdrawalAmount);
+        setWithdrawalAmount('')
+        if (isNaN(amount)) {
+            toast.warn("Số tiền rút không hợp lệ");
+            return;
+        }
         setIsModalWidthDrawOpen(false);
-        setWithdrawalAmount(1000)
-        toast.promise(withDrawal(withdrawalAmount, token), {
+        toast.promise(withDrawal(amount, token), {
             pending: {
                 render() {
                     return "Đang tạo giao dịch vui lòng đợi!"
@@ -60,6 +55,8 @@ export default function Finalcial() {
             },
             success: {
                 async render({ data }) {
+                    const dataHistory = await historyWidthDrawal(token);
+                    setHistory(dataHistory);
                     return "Tạo giao dịch rút tiền thành công"
                 },
                 // other options
@@ -69,10 +66,8 @@ export default function Finalcial() {
                 render: ({ data }) => {
                     const error: any = data
                     if (error.response && error.response.status === 401) {
-                        // Lỗi 401 có nghĩa là "Sai tài khoản hoặc mật khẩu"
                         console.log(error);
                     } else {
-
                         console.error("Lỗi :", error);
                     }
                     return "lỗi vui lòng thử lại"
@@ -118,8 +113,6 @@ export default function Finalcial() {
             const dataHistory = await historyWidthDrawal(token);
             setDataUser(data)
             setHistory(dataHistory)
-            console.log(data);
-
         }
         fetchUser()
     }, [token])
@@ -162,65 +155,12 @@ export default function Finalcial() {
                                             </span>
                                         </td>
                                         <td className="p-4 whitespace-nowrap text-sm">{formattedDate(item.createdAt)}</td>
-
-                                        {/* <th className="text-start p-4 relative">
-        <button onClick={() => openModal('modal1')} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
-            <CiEdit />
-        </button>
-        <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
-            <MdDeleteForever />
-        </button>
-                                          </th> */}
                                     </tr ></>
                                 )
                             })}
                         </tbody>
                     </table>
-                    {
-                        modals.includes('modal1') && (
-                            <div className="modal">
-                                <div className="modal-content">
-                                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                                        <div className="fixed inset-0 bg-[#0a1e4266] opacity-50" onClick={() => closeModal('modal1')}></div>
-                                        <div className="bg-white p-4 z-50 w-full h-full md:h-auto  md:w-3/6 md:rounded-xl  lg:h-auto lg:rounded-xl lg:w-528" >
-                                            <div className=" w-full flex justify-between mb-5">
-                                                <h2 className='font-semibold text-xl'>Chỉnh sửa sản phẩm</h2>
-                                                <button onClick={() => closeModal('modal1')}> <IoMdClose className="text-2xl text-gray-200" /></button>
-                                            </div>
-                                            <div>
-                                                <div className="flex flex-col mb-2">
-                                                    <label className="text-sm font-semibold">Tên sản phẩm phẩm:</label>
-                                                    <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                                </div>
-                                                <div className="flex flex-col mb-2">
-                                                    <label className="text-sm font-semibold">Số lượng:</label>
-                                                    <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                                </div >
-                                                <div className="flex flex-col mb-2">
-                                                    <label className="text-sm font-semibold">Giá:</label>
-                                                    <input type="text" className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg" />
-                                                </div>
-                                                <div className="mb-2">
-                                                    <label className="text-sm font-semibold">Ảnh:</label>
-                                                    <label className="block mt-1">
-                                                        <span className="sr-only">Choose profile photo</span>
-                                                        <input type="file" className="block w-full text-sm text-gray-500 file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:disabled:opacity-50 file:disabled:pointer-events-none dark:file:bg-blue-500 dark:hover:file:bg-blue-400 " /> </label>
-                                                </div>
-                                                <div className="flex flex-col mb-2">
-                                                    <label className="text-sm font-semibold">Mô tả:</label>
-                                                    <textarea name="" id="" className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
-                                                </div>
-                                                <div className="flex justify-end">
-                                                    <button onClick={() => closeModal('modal1')} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
-                                                    <button className="rounded-lg text-white font-semibold text-sm bg-primary px-4 py-2">Lưu</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    }
+
                 </div >
         },
         {
@@ -277,11 +217,11 @@ export default function Finalcial() {
                                         </button>
                                         <p className='mt-[15px] font-semibold text-base'>Nhập số tiền cần rút:</p>
                                         <input
-                                            type="number"
+                                            type="text"
                                             placeholder='100000'
                                             className='pl-2 w-full h-[40px] focus:outline-none border rounded-[5px]'
                                             value={withdrawalAmount}
-                                            onChange={handleInputChange}
+                                            onChange={(e) => { setWithdrawalAmount(e.target.value) }}
                                         />
                                         <button
                                             onClick={handleWithdrawal}

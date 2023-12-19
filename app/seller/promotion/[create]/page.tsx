@@ -21,17 +21,28 @@ export default function createDiscount() {
   const token = Cookies.get('token')
   const code = params.create as string
 
-  // const [voucherCode, setVoucherCode] = useState("")
-  const [discountType, setDiscountType] = useState("fixedPrice")
+  const [promotionType, setPromotionType] = useState('');
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
-  const [minAmout, setMinAmount] = useState(Number);
-  const [listPrd, setListPrd] = useState<string[]>([]);
-  const [discount, setDiscount] = useState(Number);
+  const [minAmout, setMinAmount] = useState('');
+  const [listPrd, setListPrd] = useState<{ id: string; name: string }[]>([]);
+  const [discount, setDiscount] = useState('');
 
-  const handleChangeDiscountType = (section: string) => {
-    setDiscountType(section)
-  }
+  useEffect(() => {
+    if (code === '655caa32d7b31be96da71a26') {
+      setPromotionType('discount-product');
+    } else if (code === '655caa6fd7b31be96da71a28') {
+      setPromotionType('preferential-price');
+    } else if (code === '655caa88d7b31be96da71a29') {
+      setPromotionType('gift');
+    } else {
+      router.push('/seller/promotion');
+    }
+  }, [code]);
+
+  // const handleChangeDiscountType = (section: string) => {
+  //   setDiscountType(section)
+  // }
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newStartDate = new Date(e.target.value);
@@ -43,32 +54,12 @@ export default function createDiscount() {
     setEndDate(newEndDate);
   };
 
-  const handleMinAmout = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    const parsedValue = parseInt(inputValue, 10);
-
-    if (!isNaN(parsedValue)) {
-      setMinAmount(parsedValue);
-    }
-  }
-
-  const handleDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    const parsedValue = parseInt(inputValue, 10);
-
-    if (!isNaN(parsedValue)) {
-      setDiscount(parsedValue);
-    }
-  }
-
   const handleCancel = () => {
     router.push('/seller/promotion')
   }
 
-  const handleProductIdsChange = (newProductIds: string[]) => {
-    setListPrd(newProductIds);
-    console.log('doan xem', newProductIds);
-
+  const handleProductIdsChange = (newSelectedProducts: { id: string; name: string }[]) => {
+    setListPrd(newSelectedProducts);
   };
 
   const handleShowListPrd = () => {
@@ -76,31 +67,67 @@ export default function createDiscount() {
   }
 
   const handleSubmitPromotion = () => {
-
-    // if (voucherCode === '') {
-    //   toast.warn('Mã khuyến mãi không được bỏ trống')
-    //   return
-    // }
-
     if (!startDate || !endDate || startDate > endDate) {
       toast.warn('Ngày và giờ của ngày bắt đầu phải nhỏ hơn ngày kết thúc')
       return;
     }
-
-    if (isNaN(minAmout) || minAmout < 0) {
-      toast.warn('Số tiền mua tối thiểu phải là số và không được bé hơn 0');
-      return;
+    let defaultData = {};
+    setDiscount('')
+    setMinAmount('')
+    setListPrd([])
+    if (promotionType === 'discount-product') {
+      const cutPrice = Number(discount);
+      if (isNaN(cutPrice) || cutPrice == null || cutPrice == 0) {
+        toast.warn("Số tiền giảm không hợp lệ");
+        return;
+      }
+      if (listPrd.length === 0) {
+        toast.warn("Vui lòng chọn sản phẩm được khuyến mãi")
+        return;
+      }
+      const idArray = listPrd.map(product => product.id)
+      defaultData = {
+        start_date: startDate,
+        end_date: endDate,
+        discount: cutPrice,
+        items: idArray,
+      };
+    } else if (promotionType === 'preferential-price') {
+      const amount = Number(minAmout);
+      if (isNaN(amount) || amount == 0 || amount == null) {
+        toast.warn('Số lượng mua tối thiểu không hợp lệ');
+        return;
+      }
+      const cutPrice = Number(discount);
+      setDiscount('')
+      if (isNaN(cutPrice) || cutPrice == null || cutPrice == 0) {
+        toast.warn("Số tiền giảm không hợp lệ");
+        return;
+      }
+      defaultData = {
+        start_date: startDate,
+        end_date: endDate,
+        min_purchase_amount: amount,
+        discount: cutPrice,
+      };
+    } else if (promotionType === 'gift') {
+      if (listPrd.length === 0) {
+        toast.warn("Vui lòng chọn sản phẩm được khuyến mãi")
+        return;
+      }
+      const idArray = listPrd.map(product => product.id)
+      defaultData = {
+        start_date: startDate,
+        end_date: endDate,
+        product_id: idArray,
+      };
     }
+    const requestData = { ...defaultData, defaultData };
 
-    if (listPrd.length === 0) {
-      toast.warn("Vui lòng chọn sản phẩm được khuyến mãi")
-      return;
-    }
-
-    toast.promise(createPromotion(code, startDate, endDate, minAmout, discount, listPrd, token), {
+    toast.promise(createPromotion(promotionType, requestData, token), {
       pending: {
         render() {
-          return "Đang tạo mã, vui lòng đợi!"
+          return "Đang tạo mã khuyến mãi, vui lòng đợi!"
         },
       },
       success: {
@@ -120,7 +147,7 @@ export default function createDiscount() {
           } else {
             console.error("Lỗi:", error);
           }
-          return <div>Đã có lỗi, xin vui lòng thử lại. {error.response.data.message}</div>
+          return <div>Lỗi, xin vui lòng thử lại. {error.response.data.message}</div>
         }
       }
     })
@@ -134,16 +161,6 @@ export default function createDiscount() {
         </div>
         <div className="flex gap-2 justify-between">
           <div className="flex flex-col gap-2 flex-1 w-1/2">
-            {/* <div className="flex gap-2 flex-col">
-              <h3 className="text-lg font-medium">Mã khuyến mãi</h3>
-              <input
-                type="text"
-                placeholder="FlashSale12/12"
-                className="py-2 px-3 border border-gray-200 rounded-md w-full outline-none"
-                value={code}
-                onChange={(e) => setVoucherCode(e.target.value)}
-              />
-            </div> */}
             <div className="flex gap-2 flex-col">
               <h3 className="text-lg font-medium">Thời gian khuyến mãi</h3>
               <div className="flex gap-2">
@@ -163,59 +180,69 @@ export default function createDiscount() {
                 />
               </div>
             </div>
-            <div className="flex gap-2 flex-col">
-              <h3 className="text-lg font-medium">Số tiền mua tối thiểu</h3>
-              <p className="text-xs text-gray-700">
-                Nếu bạn không nhập trường thì có số tiền cần mua tối thiểu sẽ là 0đ
-              </p>
+
+            {(promotionType == "preferential-price") && (<div className="flex gap-2 flex-col">
+              <h3 className="text-lg font-medium">Số lượng sản phẩm mua tối thiểu</h3>
               <div className="flex gap-2">
                 <input
-                  type="number"
+                  type="text"
                   min={0}
-                  placeholder="150000"
-                  onChange={handleMinAmout}
+                  placeholder="50"
+                  value={minAmout}
+                  onChange={(e) => { setMinAmount(e.target.value) }}
                   className="py-2 px-3 border border-gray-200 rounded-md w-full outline-none"
                 />
               </div>
 
-            </div>
-            <div className="flex gap-2 flex-col">
-              <h3 className="text-lg font-medium">Số tiền giảm</h3>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  min={0}
-                  placeholder="50000"
-                  onChange={handleDiscount}
-                  className="py-2 px-3 border border-gray-200 rounded-md w-full outline-none"
-                />
+            </div>)}
+            {(promotionType === 'discount-product' || promotionType === 'preferential-price') && (
+              <div className="flex gap-2 flex-col">
+                <h3 className="text-lg font-medium">Giảm giá</h3>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    min={0}
+                    placeholder="50000"
+                    value={discount}
+                    onChange={(e) => setDiscount(e.target.value)}
+                    className="py-2 px-3 border border-gray-200 rounded-md w-full outline-none"
+                  />
+                </div>
               </div>
+            )}
 
-            </div>
-            <div className="flex gap-2 flex-col">
-              <h3 className="text-lg font-medium">Loại chiết khấu</h3>
-              {/* <div className="flex gap-2">
+            {/* <div className="flex gap-2 flex-col"> */}
+            {/* <h3 className="text-lg font-medium">Loại chiết khấu</h3> */}
+            {/* <div className="flex gap-2">
                 <input type="radio" className="" />
                 <label htmlFor="" className="text-base">
                   Giảm giá phần trăm
                 </label>
               </div> */}
-              <div className="flex gap-2">
+            {/* <div className="flex gap-2">
                 <input type="radio" className="" onChange={() => handleChangeDiscountType('fixedPrice')} checked={discountType === 'fixedPrice'} />
                 <label htmlFor="" className="text-base">
                   Giá cố định
                 </label>
-              </div>
-            </div>
-            <div className="py-3 flex gap-2 flex-col">
-              <h1 className="font-medium text-2xl">Sản phẩm</h1>
-              <p className="text-xs text-gray-700">
-                Chọn sản phẩm hoặc SKU bạn muốn khuyến mãi
-              </p>
-            </div>
-            <button className="px-3 py-2 bg-gray-100 text-black rounded-md inline-block" onClick={handleShowListPrd}>
-              Chọn sản phẩm
-            </button>
+              </div> */}
+            {/* </div> */}
+            {(promotionType == 'discount-product' || promotionType == 'gift') && (
+              <><div className="py-3 flex gap-2 flex-col">
+                <h1 className="font-medium text-2xl">Sản phẩm</h1>
+                <p className="text-xs text-gray-700">
+                  Chọn sản phẩm hoặc SKU bạn muốn khuyến mãi
+                </p>
+              </div><button className="px-3 py-2 bg-gray-100 text-black rounded-md inline-block" onClick={handleShowListPrd}>
+                  Chọn sản phẩm
+                </button><div>
+                  <ul>
+                    {(listPrd && listPrd.length > 0) && (<h3>Các sản phẩm đã chọn</h3>)}
+                    {listPrd.map((item) => (
+                      <li>{item.name}</li>
+                    ))}
+                  </ul>
+                </div></>
+            )}
           </div>
           <div className="flex gap-4 w-1/2 justify-center">
             <div className="relative group">
@@ -270,7 +297,7 @@ export default function createDiscount() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
       <div className="flex items-center justify-evenly mb-10">
         <p className="text-gray-700">Bằng việc nhấp vào "Đồng ý & đăng", bạn đồng ý  <span className="text-primary">Điều khoản & điều kiện của Công cụ quảng bá cho người bán của MarketMMO</span></p>
         <div className="flex gap-2 justify-end">

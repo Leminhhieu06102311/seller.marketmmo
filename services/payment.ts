@@ -1,8 +1,7 @@
 import api from "./api";
 
 export async function withDrawal(amount: number, access_token:string) {
-    const res = await api.post("/payment/withdrawal", {
-        amount: amount,
+    const res = await api.post(`/payment/withdrawal?amount=${amount}`, {
     },{
         headers:
         {

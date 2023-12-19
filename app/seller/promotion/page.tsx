@@ -66,7 +66,7 @@ export default function Promotion() {
   };
 
   const promotionType = {
-    productDiscount: '655caa32d7b31be96da71a26',
+    discountProduct: '655caa32d7b31be96da71a26',
     buyALot: '655caa57d7b31be96da71a27',
     voucher: '655caa6fd7b31be96da71a28',
     gift: '655caa88d7b31be96da71a29'
@@ -121,7 +121,7 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2' onClick={handleShowListPromotion}>Khuyến mãi của tôi</button>
-                  <Link href={`/seller/promotion/${promotionType.productDiscount}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md' >Tạo</Link>
+                  <Link href={`/seller/promotion/${promotionType.discountProduct}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md' >Tạo</Link>
                 </div>
               </div>
             </div>

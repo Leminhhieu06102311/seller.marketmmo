@@ -4,7 +4,7 @@ import { ENUM_NAME_MODAL } from "@/enum/name_modal";
 import Category from "@/interfaces/category";
 import { useAppDispatch } from "@/redux/hooks";
 import { hideModal } from "@/redux/modalSlice";
-import { addProduct, editProduct, getCategories } from "@/services/product";
+import { addProduct, editProduct, getAllProducts, getCategories } from "@/services/product";
 import { useEffect, useState, memo } from "react";
 import { IoMdClose } from "react-icons/io";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -22,22 +22,23 @@ import { toast } from "react-toastify";
 function EditProduct({ setProducts, productId, products }: {
     setProducts: React.Dispatch<React.SetStateAction<Product[] | undefined>>, productId: string, products: Product[] | undefined
 }) {
-    const dataPreProduct : Product | undefined = products?.filter((product) => product._id === productId)[0]
+    const dataPreProduct: Product | undefined = products?.filter((product) => product._id === productId)[0]
+
     useEffect(() => {
         setFields({
-            name: '',
-            categories: '',
-            pictures: [''],
-            price: 0,
-            quantity: 0,
-            description: ''
+            name: dataPreProduct?.name ?? '',
+            categories: dataPreProduct?.categories ?? '',
+            pictures: dataPreProduct?.pictures ?? [''],
+            price: dataPreProduct?.price ?? 0,
+            quantity: dataPreProduct?.quantity ?? 0,
+            description: dataPreProduct?.description ?? ''
         })
     }, [dataPreProduct])
     const dispatch = useAppDispatch()
     const [imageUrl, setImageUrl] = useState<string>()
     const [selectFile, setSelectFile] = useState<File | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
-    const token = Cookies.get('access_token_seller')
+    const token = Cookies.get('token')
     const [fields, setFields] = useState<AddProduct>({
         name: '',
         categories: '',
@@ -62,15 +63,16 @@ function EditProduct({ setProducts, productId, products }: {
             setImageUrl(objectUrl)
         }
     };
-    const handleUpload = async () => {
-        if (!selectFile) return;
-        const randomString = generateRandomString(8);
-        const timestamp = getCurrentTimestamp();
-        const storageRef = ref(storage, `product/${randomString}_${timestamp}_${selectFile.name}`);
-        const task = await uploadBytes(storageRef, selectFile)
-        const url = await getDownloadURL(task.ref)
-        setFields({ ...fields, pictures: [url] })
-    };
+    // const handleUpload = async () => {
+    //     if (!selectFile) return;
+    //     const randomString = generateRandomString(8);
+    //     const timestamp = getCurrentTimestamp();
+    //     const storageRef = ref(storage, `product/${randomString}_${timestamp}_${selectFile.name}`);
+    //     const task = await uploadBytes(storageRef, selectFile)
+    //     const url = await getDownloadURL(task.ref)
+    //     console.log(url);
+    //     setFields({ ...fields, pictures: [url] })
+    // };
     useEffect(() => {
         return () => {
             if (imageUrl) URL.revokeObjectURL(imageUrl)
@@ -78,19 +80,28 @@ function EditProduct({ setProducts, productId, products }: {
     }, [imageUrl])
     const handleEdit = async () => {
         try {
-        const res = await editProduct(fields.name, fields.categories, fields.price, fields.pictures, fields.quantity, fields.description, productId)
-        const newProduct = res?.data.data
-        dispatch(hideModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
-        handleUpload()
-        setProducts((prev: any) => [...newProduct, ...prev])
-        toast.success("Tạo sản phẩm thành công")
-        
-        } catch (error) {
-        toast.error("Tạo sản phẩm thất bại vui lòng thử lại sau!")
+            if (selectFile) {
+                const randomString = generateRandomString(8);
+                const timestamp = getCurrentTimestamp();
+                const storageRef = ref(storage, `product/${randomString}_${timestamp}_${selectFile.name}`);
+                const task = await uploadBytes(storageRef, selectFile)
+                const url = await getDownloadURL(task.ref)
+                const urls: string[] = [url];
+                const res = await editProduct(fields.name, fields.categories, fields.price, urls, fields.quantity, fields.description, productId, token)
+            } else {
+                const res = await editProduct(fields.name, fields.categories, fields.price, fields.pictures, fields.quantity, fields.description, productId, token)
+            }
+            dispatch(hideModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
+            const updatedProducts = await getAllProducts(token, 1);
+            setProducts(updatedProducts);
+            setImageUrl('');
+            toast.success("Sửa sản phẩm thành công")
 
-            
+        } catch (error) {
+            toast.error("Sửa sản phẩm thất bại vui lòng thử lại sau!")
         }
     }
+
     return (
         <ContentModal nameModal={ENUM_NAME_MODAL.EDIT_PRODUCT}>
             <div className="flex justify-center items-center w-full h-full">
@@ -105,7 +116,7 @@ function EditProduct({ setProducts, productId, products }: {
                             <input
                                 type="text"
                                 className="mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"
-                                value={ fields.name || dataPreProduct?.name}
+                                value={fields.name || dataPreProduct?.name}
                                 onChange={(e) => setFields({ ...fields, name: e.target.value })}
                             />
                         </div>
@@ -138,6 +149,7 @@ function EditProduct({ setProducts, productId, products }: {
                         </div>
                         <div className="mb-2">
                             <label className="text-sm font-semibold">Ảnh:</label>
+
                             <label className="block mt-1">
                                 <span className="sr-only">Choose profile photo</span>
                                 <input
@@ -146,11 +158,14 @@ function EditProduct({ setProducts, productId, products }: {
                                     onChange={handleFileChange}
                                 />
                             </label>
-                            {imageUrl && <Image src={imageUrl} width={0} height={0} alt="banner" className="w-full h-[300px] my-2 rounded-md" />}
+                            {imageUrl ? (<Image src={imageUrl} width={0} height={0} alt="banner" className="w-[400px]  my-2 rounded-md" />) : (
+                                dataPreProduct?.pictures.map((path, index) => (
+                                    <Image className=" my-2 mx-auto" key={index} width={400} height={0} src={path} alt={`Hình ảnh ${index}`} />
+                                )))}
                         </div>
                         <div className="flex flex-col mb-2">
                             <label className="text-sm font-semibold">Mô tả:</label>
-                            <textarea name="" id="" value={fields.description} onChange={(e) => setFields({ ...fields, description: e.target.value })} className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-2 hover:border-primary border rounded-lg"></textarea>
+                            <textarea name="" id="" value={fields.description || dataPreProduct?.description} onChange={(e) => setFields({ ...fields, description: e.target.value })} className=" focus:border-primary focus:outline-none h-24 mt-1 w-full px-3 py-3 hover:border-primary border rounded-lg"></textarea>
                         </div>
                         <div className="flex justify-end">
                             <button onClick={() => dispatch(hideModal(ENUM_NAME_MODAL.EDIT_PRODUCT))} className="rounded-lg text-black font-semibold text-sm bg-gray-50 px-4 py-2 mr-2">Huỷ</button>
