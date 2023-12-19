@@ -1,108 +1,66 @@
 "use client"
-import { SetStateAction, useState, useEffect } from "react";
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteForever } from "react-icons/md";
-import { IoIosSearch } from "react-icons/io";
-import Cookies from 'js-cookie'
-import { MdAdd } from "react-icons/md";
-import { deleteProduct, getAllProducts, getCategories } from "@/services/product";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { Product } from "@/interfaces/product";
-import { toast } from "react-toastify";
-import { showModal } from "@/redux/modalSlice";
+import { SetStateAction, useState, useEffect, memo } from "react";
+import { IoIosAddCircleOutline, IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { ENUM_NAME_MODAL } from "@/enum/name_modal";
-import { formatCurrencyVND } from "@/utils/format_vnd";
-import AddProduct from "./AddProduct";
-import { useRouter } from "next/navigation";
-import EditProduct from "./EditProduct";
-import Category from "@/interfaces/category";
-import { toggleActiveSearchCate } from "@/redux/productSlice";
-export default function managerProduct() {
-    const { id } = useAppSelector((state) => state.user)
-    const dispatch = useAppDispatch()
+import ContentModal from "@/components/Modal";
+import { getPromotion } from "@/services/promotion";
+import { Promotion } from "@/interfaces/promotion";
+import Cookies from 'js-cookie'
+
+
+function ListPromotion() {
     const [page, setPage] = useState(1)
-    const [products, setProducts] = useState<Prodưuct[]>()
-    const token = Cookies.get('token')
+    const [promotions, setPromotions] = useState<Promotion[]>()
     const [activeTab, setActiveTab] = useState(0);
-    const [activeSearchByCate, setActiveSearchByCate] = useState(0)
-    const [productId, setProductId] = useState('')
-    const [categories, setCategories] = useState<Category[]>()
+    const token = Cookies.get('token')
+
+    const formattedDate = (date: Date) => { return new Date(date).toISOString().split('T')[0] };
+
+
     const showTab = (index: SetStateAction<number>) => {
         setActiveTab(index);
     };
+
     useEffect(() => {
-        const getCate = async () => {
-            const res = await getCategories()
-            setCategories(res)
+        const fetchData = async () => {
+            const res = await getPromotion(token)
+            setPromotions(res)
         }
-        getCate()
-        
-    }, [])
-    useEffect(() => {
-       const getAllProduct = async () =>{
-            const res = await getAllProducts(token, page)
-            setProducts(res)
-       }
-       getAllProduct()
-    }, [page, activeSearchByCate])
-    const hanldeDelete = async (idProduct: string) => {
-        toast.promise(deleteProduct(idProduct, token), {
-            pending: {
-                render: () => {
-                    return <div>Đang xóa sản phẩm</div>
-                }
-            },
-            success: {
-                render: async () => {
-                    setProducts(products?.filter((item) => item._id !== idProduct))
-                    return <div>Xoá sản phẩm thành công</div>
-                }
-            },
-            error: {
-                render: () => {
-                    return <div>Lỗi khi xóa sản phẩm. Thử lại sau!</div>
-                }
-            }
-        })
-    }
-    const hanldeEdit = (productId: string) => {
-        setProductId(productId)
-        dispatch(showModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
-    }
-    const hanldeSearchByCate = (cateId : string,index : number) => {
-        setActiveSearchByCate(index)
-        const filterProductByCate = products?.filter((product) => product.categories === cateId)
-        setProducts(filterProductByCate)
-    }
+        fetchData()
+    }, [page])
+
     const tabs = [
         {
             label: 'Tất cả', content:
                 <div>
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
-                            <tr className="border-t">
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Tên sản phẩm</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Giá</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Số lượng</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Đã bán</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Hành động</th>
+                            <tr className="border-t bg-white">
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Mã giảm giá</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Loại mã giảm giá</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Ngày bắt đầu</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Ngày kết thúc</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Số tiền mua tối thiểu</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Giảm giá</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">Danh sách các sản phẩm được áp dụng</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {products && products.map((product) => {
+                            {promotions && promotions.map((promotion) => {
                                 return (
-                                    <tr key={product._id} className="bg-white border-t hover:bg-gray-50">
-                                        <td className="p-4 whitespace-nowrap text-sm">{product.name}</td>
-                                        <td className="p-4 whitespace-nowrap md:sticky">{formatCurrencyVND(product.price)}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{product.quantity}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{product.numberHasSeller}</td>
-
+                                    <tr key={promotion._id} className="bg-white border-t hover:bg-gray-50">
+                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.code}</td>
+                                        <td className="p-4 whitespace-nowrap md:sticky">
+                                            {/* {promotion.voucher.name} */}
+                                        </td>
+                                        <td className="p-4 whitespace-nowrap text-sm">{formattedDate(promotion.start_date)}</td>
+                                        <td className="p-4 whitespace-nowrap text-sm">{formattedDate(promotion.end_date)}</td>
+                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.min_purchase_amount}</td>
+                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.discount}</td>
+                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.items}</td>
                                         <th className="text-start p-4 relative">
-                                            <button onClick={() => hanldeEdit(product._id)} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
-                                                <CiEdit />
-                                            </button>
-                                            <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red]" onClick={() => hanldeDelete(product._id)}>
-                                                <MdDeleteForever />
+                                            <button className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                                <IoIosAddCircleOutline />
                                             </button>
                                         </th>
                                     </tr>
@@ -111,7 +69,6 @@ export default function managerProduct() {
                             })}
                         </tbody>
                     </table>
-                    {productId && <EditProduct products={products} setProducts={setProducts} productId={productId} />}
                 </div >
         }
     ];
@@ -119,9 +76,8 @@ export default function managerProduct() {
         import('preline')
     }, [])
     return (
-        <div className="p-6 max-w-[1536px] w-full m-auto">
-            <h1 className="text-xl font-bold mb-4">Quản lí sản phẩm</h1>
-            <div className="mx-auto  shadow-lg rounded-xl">
+        <ContentModal nameModal={ENUM_NAME_MODAL.LISTPROMOTION_MODAL}>
+            <div className="mx-auto shadow-lg rounded-xl w-4/5">
                 <ul className="flex px-6 py-4 bg-white rounded-t-xl overflow-hidden">
                     {tabs.map((tab, index) => (
                         <li
@@ -141,26 +97,7 @@ export default function managerProduct() {
                         <IoIosSearch className="text-lg mr-2 text-gray-400 flex-shrink-0" />
                         <input type="text" placeholder="Search..." className="bg-transparent focus:outline-none w-full" />
                     </div>
-
-
-
-                    <button onClick={() => dispatch(showModal(ENUM_NAME_MODAL.ADD_PRODUCT))} className="p-2 flex justify-center items-center bg-primary rounded-lg shadow-md text-white font-semibold text-sm">
-                        <MdAdd className="text-xl font-bold" />
-                        <span> Thêm sản phẩm</span>
-                    </button>
                 </div>
-                <div className="flex gap-2 px-6 pb-4 bg-white">
-                    {categories?.map((cate, index) => (
-                        <button type="button" onClick={() => hanldeSearchByCate(cate._id,index)} className={`${activeSearchByCate === index ? 'text-white bg-blue-600' : ''} py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
-                            {cate.name}
-                        </button>
-                    ))}
-                    <button type="button" className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg   text-black bg-slate-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
-                        Đặt lại
-                        </button>
-
-                </div>
-                <AddProduct setProducts={setProducts} />
                 <div>
                     <div>
                         {tabs.map((tab, index) => (
@@ -286,6 +223,9 @@ export default function managerProduct() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ContentModal>
     )
+
 }
+
+export default memo(ListPromotion);

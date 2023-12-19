@@ -8,7 +8,7 @@ export const store = configureStore({
     reducer: {
        user: userSlice,
        modal: modalSlice,
-       product: productSlice
+       product: productSlice,
     }
 })
 

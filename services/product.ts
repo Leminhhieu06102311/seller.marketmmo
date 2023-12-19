@@ -1,16 +1,6 @@
 import { Product } from "@/interfaces/product";
 import api from "./api";
 
-export async function getAllProducts(access_token: string, page: number) {
-    const res = await api.get(`/product/products-by-user?limit=30&page=${page}&timeSort=DESC`, {
-        headers: {
-            Authorization: 'Bearer ' + access_token
-        }
-    })
-    const { result } = res.data.data
-    return result
-}
-
 
 export async function deleteProduct(idProduct: string, access_token: string) {
     const res = await api.delete(`/product?id=${idProduct}`, {

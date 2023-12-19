@@ -26,7 +26,8 @@ function AddProduct({ setProducts }: {
     const [imageUrl, setImageUrl] = useState<string>()
     const [selectFile, setSelectFile] = useState<File | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
-    const token = Cookies.get('access_token_seller')
+    const token = Cookies.get('token')
+
     const [fields, setFields] = useState<AddProduct>({
         name: '',
         categories: '',
@@ -164,7 +165,7 @@ function AddProduct({ setProducts }: {
                         </div>
                     </div>
                 </div>
-               
+
             </div>
         </ContentModal>
 

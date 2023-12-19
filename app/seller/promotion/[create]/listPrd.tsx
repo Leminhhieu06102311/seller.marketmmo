@@ -1,31 +1,25 @@
 "use client"
-import { SetStateAction, useState, useEffect } from "react";
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteForever } from "react-icons/md";
-import { IoIosSearch } from "react-icons/io";
+import { SetStateAction, useState, useEffect, memo } from "react";
+import { IoIosAddCircleOutline, IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import Cookies from 'js-cookie'
-import { MdAdd } from "react-icons/md";
-import { deleteProduct, getAllProducts, getCategories } from "@/services/product";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { getAllProducts, getCategories } from "@/services/product";
 import { Product } from "@/interfaces/product";
-import { toast } from "react-toastify";
-import { showModal } from "@/redux/modalSlice";
 import { ENUM_NAME_MODAL } from "@/enum/name_modal";
 import { formatCurrencyVND } from "@/utils/format_vnd";
-import AddProduct from "./AddProduct";
-import { useRouter } from "next/navigation";
-import EditProduct from "./EditProduct";
 import Category from "@/interfaces/category";
-import { toggleActiveSearchCate } from "@/redux/productSlice";
-export default function managerProduct() {
-    const { id } = useAppSelector((state) => state.user)
-    const dispatch = useAppDispatch()
+import ContentModal from "@/components/Modal";
+
+interface ListProdProps {
+    onProductIdsChange: (newProductIds: string[]) => void;
+}
+
+function ListProd({ onProductIdsChange }: ListProdProps) {
     const [page, setPage] = useState(1)
-    const [products, setProducts] = useState<Prodưuct[]>()
+    const [products, setProducts] = useState<Product[]>()
     const token = Cookies.get('token')
     const [activeTab, setActiveTab] = useState(0);
     const [activeSearchByCate, setActiveSearchByCate] = useState(0)
-    const [productId, setProductId] = useState('')
+    const [productIds, setProductIds] = useState<string[]>([]);
     const [categories, setCategories] = useState<Category[]>()
     const showTab = (index: SetStateAction<number>) => {
         setActiveTab(index);
@@ -36,60 +30,53 @@ export default function managerProduct() {
             setCategories(res)
         }
         getCate()
-        
+
     }, [])
     useEffect(() => {
-       const getAllProduct = async () =>{
+        const getAllProduct = async () => {
             const res = await getAllProducts(token, page)
             setProducts(res)
-       }
-       getAllProduct()
+        }
+        getAllProduct()
     }, [page, activeSearchByCate])
-    const hanldeDelete = async (idProduct: string) => {
-        toast.promise(deleteProduct(idProduct, token), {
-            pending: {
-                render: () => {
-                    return <div>Đang xóa sản phẩm</div>
-                }
-            },
-            success: {
-                render: async () => {
-                    setProducts(products?.filter((item) => item._id !== idProduct))
-                    return <div>Xoá sản phẩm thành công</div>
-                }
-            },
-            error: {
-                render: () => {
-                    return <div>Lỗi khi xóa sản phẩm. Thử lại sau!</div>
-                }
-            }
-        })
+
+    const handleAddListPromotion = (productId: string) => {
+        const newProductIds = [...productIds, productId];
+        setProductIds(newProductIds);
+
+        onProductIdsChange(newProductIds);
     }
-    const hanldeEdit = (productId: string) => {
-        setProductId(productId)
-        dispatch(showModal(ENUM_NAME_MODAL.EDIT_PRODUCT))
-    }
-    const hanldeSearchByCate = (cateId : string,index : number) => {
+
+    const handleRemoveListPromotion = (productId: string) => {
+        const newProductIds: string[] = productIds.filter(id => id !== productId);
+        setProductIds(newProductIds);
+
+        onProductIdsChange(newProductIds);
+    };
+
+    const hanldeSearchByCate = (cateId: string, index: number) => {
         setActiveSearchByCate(index)
         const filterProductByCate = products?.filter((product) => product.categories === cateId)
         setProducts(filterProductByCate)
     }
+
     const tabs = [
         {
             label: 'Tất cả', content:
                 <div>
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
-                            <tr className="border-t">
+                            <tr className="border-t bg-white">
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Tên sản phẩm</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Giá</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Số lượng</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Đã bán</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Hành động</th>
+                                <th className=" text-start text-sm p-4 whitespace-nowrap"></th>
                             </tr>
                         </thead>
                         <tbody>
                             {products && products.map((product) => {
+                                const isProductAdded = productIds.includes(product._id);
                                 return (
                                     <tr key={product._id} className="bg-white border-t hover:bg-gray-50">
                                         <td className="p-4 whitespace-nowrap text-sm">{product.name}</td>
@@ -98,12 +85,15 @@ export default function managerProduct() {
                                         <td className="p-4 whitespace-nowrap text-sm">{product.numberHasSeller}</td>
 
                                         <th className="text-start p-4 relative">
-                                            <button onClick={() => hanldeEdit(product._id)} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
-                                                <CiEdit />
-                                            </button>
-                                            <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red]" onClick={() => hanldeDelete(product._id)}>
-                                                <MdDeleteForever />
-                                            </button>
+                                            {isProductAdded ? (
+                                                <button onClick={() => handleRemoveListPromotion(product._id)} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                                    <IoIosCloseCircleOutline />
+                                                </button>
+                                            ) : (
+                                                <button onClick={() => handleAddListPromotion(product._id)} className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                                    <IoIosAddCircleOutline />
+                                                </button>
+                                            )}
                                         </th>
                                     </tr>
 
@@ -111,7 +101,6 @@ export default function managerProduct() {
                             })}
                         </tbody>
                     </table>
-                    {productId && <EditProduct products={products} setProducts={setProducts} productId={productId} />}
                 </div >
         }
     ];
@@ -119,9 +108,8 @@ export default function managerProduct() {
         import('preline')
     }, [])
     return (
-        <div className="p-6 max-w-[1536px] w-full m-auto">
-            <h1 className="text-xl font-bold mb-4">Quản lí sản phẩm</h1>
-            <div className="mx-auto  shadow-lg rounded-xl">
+        <ContentModal nameModal={ENUM_NAME_MODAL.LISTPRODUCT_MODAL}>
+            <div className="mx-auto shadow-lg rounded-xl w-4/5">
                 <ul className="flex px-6 py-4 bg-white rounded-t-xl overflow-hidden">
                     {tabs.map((tab, index) => (
                         <li
@@ -141,26 +129,14 @@ export default function managerProduct() {
                         <IoIosSearch className="text-lg mr-2 text-gray-400 flex-shrink-0" />
                         <input type="text" placeholder="Search..." className="bg-transparent focus:outline-none w-full" />
                     </div>
-
-
-
-                    <button onClick={() => dispatch(showModal(ENUM_NAME_MODAL.ADD_PRODUCT))} className="p-2 flex justify-center items-center bg-primary rounded-lg shadow-md text-white font-semibold text-sm">
-                        <MdAdd className="text-xl font-bold" />
-                        <span> Thêm sản phẩm</span>
-                    </button>
                 </div>
                 <div className="flex gap-2 px-6 pb-4 bg-white">
                     {categories?.map((cate, index) => (
-                        <button type="button" onClick={() => hanldeSearchByCate(cate._id,index)} className={`${activeSearchByCate === index ? 'text-white bg-blue-600' : ''} py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
+                        <button type="button" onClick={() => hanldeSearchByCate(cate._id, index)} className={`${activeSearchByCate === index ? 'text-white bg-blue-600' : ''} py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
                             {cate.name}
                         </button>
                     ))}
-                    <button type="button" className={`py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg   text-black bg-slate-100 disabled:opacity-50 disabled:pointer-events-none dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}>
-                        Đặt lại
-                        </button>
-
                 </div>
-                <AddProduct setProducts={setProducts} />
                 <div>
                     <div>
                         {tabs.map((tab, index) => (
@@ -286,6 +262,9 @@ export default function managerProduct() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ContentModal>
     )
+
 }
+
+export default memo(ListProd);
