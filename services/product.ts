@@ -1,6 +1,5 @@
 import { Product } from "@/interfaces/product";
 import api from "./api";
-ư
 
 
 export async function deleteProduct(idProduct: string, access_token: string) {
