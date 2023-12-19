@@ -2,6 +2,11 @@
 import React, { SetStateAction, useState } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { showModal } from '@/redux/modalSlice';
+import { ENUM_NAME_MODAL } from '@/enum/name_modal';
+import ListPromotion from './listPromotion';
+
 export default function Promotion() {
   const tabs = [
     {
@@ -54,10 +59,22 @@ export default function Promotion() {
   ];
 
   const [activeTab, setActiveTab] = useState(0);
+  const dispatch = useDispatch()
 
   const showTab = (index: SetStateAction<number>) => {
     setActiveTab(index);
   };
+
+  const promotionType = {
+    productDiscount: '655caa32d7b31be96da71a26',
+    buyALot: '655caa57d7b31be96da71a27',
+    voucher: '655caa6fd7b31be96da71a28',
+    gift: '655caa88d7b31be96da71a29'
+  }
+  const handleShowListPromotion = () => {
+    dispatch(showModal(ENUM_NAME_MODAL.LISTPROMOTION_MODAL))
+  }
+
   return (
     <div className='p-6 max-w-[1536px] w-full m-auto'>
       <h1 className="text-xl font-bold w-[99%]">Ưu đãi</h1>
@@ -103,8 +120,8 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <Link href="/create" className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
+                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2' onClick={handleShowListPromotion}>Khuyến mãi của tôi</button>
+                  <Link href={`/seller/promotion/${promotionType.productDiscount}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md' >Tạo</Link>
                 </div>
               </div>
             </div>
@@ -121,7 +138,7 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <button className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
+                  <button disabled className='bg-blue-400 text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
                 </div>
               </div>
             </div>
@@ -138,7 +155,7 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <button className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
+                  <Link href={`/seller/promotion/${promotionType.buyALot}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
                 </div>
               </div>
             </div>
@@ -155,7 +172,7 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <button className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
+                  <Link href={`/seller/promotion/${promotionType.voucher}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
                 </div>
               </div>
             </div>
@@ -172,7 +189,7 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <button className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
+                  <button disabled className='bg-blue-400 text-sm text-white font-semibold px-3 py-2 rounded-md' >Tạo</button>
                 </div>
               </div>
             </div>
@@ -189,13 +206,16 @@ export default function Promotion() {
                 </div>
                 <div className='flex justify-end'>
                   <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <button className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
+                  <Link href={`/seller/promotion/${promotionType.gift}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ListPromotion />
     </div>
   )
 }
+
+
