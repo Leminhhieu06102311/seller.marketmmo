@@ -36,7 +36,7 @@ const links: Links[] = [
   },
   {
     name: 'Quản lí rút tiền',
-    path: '/admin/transaction-manager',
+    path: '/admin/transaction-management',
     icon: <FaCreditCard className="w-6 h-6 mr-4" />,
   },
 ];
