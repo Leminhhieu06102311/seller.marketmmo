@@ -111,7 +111,7 @@ export default function ManagerLayout({
                     </button>
                     <button className="inline-flex items-center justify-center p-2 ml-2 w-10 h-10  rounded-full hover:bg-[#63738114] ">
                       <div className="w-full h-full rounded-full overflow-hidden border-[2px solid rgb(249, 250, 251)]">
-                        {/* <Image className="w-full h-full text-center object-cover " src={avatar} alt="" width={40} height={40} /> */}
+                        <Image className="w-full h-full text-center object-cover " src={avatar} alt="" width={40} height={40} />
                       </div>
                     </button>
 

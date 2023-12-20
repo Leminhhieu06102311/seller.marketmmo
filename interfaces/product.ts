@@ -18,6 +18,7 @@ export interface Product {
   updatedAt: string
 }
 
+
 export interface AddProduct {
   name: string,
   categories: string,
@@ -27,3 +28,5 @@ export interface AddProduct {
   description: string, 
   attach: string | string[]
 }
+
+export default Product

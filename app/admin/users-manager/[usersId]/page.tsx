@@ -17,6 +17,7 @@ export default function UserDetail({
 }: {
   params: { usersId: string };
 }) {
+  
   const creatorId = params.usersId;
   const [user, setUser] = useState<User | null>(null);
   const [orderHistory, setOrderHistory] = useState<HistoryOrderAdmin[]>([]);
