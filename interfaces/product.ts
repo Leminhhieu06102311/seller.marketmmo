@@ -25,4 +25,5 @@ export interface AddProduct {
   pictures: string[], 
   quantity: number, 
   description: string, 
+  attach: string | string[]
 }

@@ -121,8 +121,8 @@ export default function Login() {
         <section className="flex flex-col flex-1 justify-center w-full  ">
             <div className=" flex justify-center items-center grow m-0 p-0  pt-8 h-screen  ">
                 <div className="  w-full max-w-[440px] ">
-                    <h2 className="font-bold md:text-2xl mb-10 text-2xl lg:text-3xl">
-                        Đăng nhập Market MMO
+                    <h2 className="font-bold md:text-2xl text-center mb-10 text-2xl lg:text-3xl">
+                        Đăng Nhập MarketMMO
                     </h2>
                     <div className="flex m-0 w-full ">
                         <button className="inline-flex gap-2 items-center justify-center border rounded-full w-full pt-2 pb-2  md:text-base font-medium cursor-pointer text-sm h-14 ">

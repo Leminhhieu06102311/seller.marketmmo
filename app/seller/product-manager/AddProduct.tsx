@@ -34,7 +34,8 @@ function AddProduct({ setProducts }: {
         pictures: [''],
         price: 0,
         quantity: 0,
-        description: ''
+        description: '',
+        attach: '' || ['']
     })
     useEffect(() => {
         const fetchCategories = async () => {
@@ -75,7 +76,7 @@ function AddProduct({ setProducts }: {
             const task = await uploadBytes(storageRef, selectFile)
             const url = await getDownloadURL(task.ref)
             const pictures = [url]
-            const res = await addProduct(fields.name, fields.categories, fields.price, pictures, fields.quantity, fields.description, token)
+            const res = await addProduct(fields.name, fields.categories, fields.price, pictures, fields.quantity, fields.description,fields.attach, token)
             const newProduct = res?.data.data
             dispatch(hideModal(ENUM_NAME_MODAL.ADD_PRODUCT))
             setFields({
@@ -84,15 +85,14 @@ function AddProduct({ setProducts }: {
                 pictures: [''],
                 price: 0,
                 quantity: 0,
-                description: ''
+                description: '',
+                attach: ["tai khoan", 'mat khau']
             })
             setProducts((prev: any) => [...newProduct, ...prev])
             toast.success("Tạo sản phẩm thành công")
 
         } catch (error) {
             toast.error("Tạo sản phẩm thất bại vui lòng thử lại sau!")
-
-
         }
     }
     return (

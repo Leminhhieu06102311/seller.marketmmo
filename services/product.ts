@@ -21,7 +21,7 @@ export async function deleteProduct(idProduct: string, access_token: string) {
     return res
 }
 
-export async function addProduct(name: string, categories: string, price: number, pictures: string[], quantity: number, description: string, access_token: string) {
+export async function addProduct(name: string, categories: string, price: number, pictures: string[], quantity: number, description: string, attach: string | string[], access_token: string) {
     const payload = {
         data: [
             {
@@ -30,7 +30,8 @@ export async function addProduct(name: string, categories: string, price: number
                 price,
                 pictures,
                 quantity,
-                description
+                description,
+                attach
             }
         ]
     }
