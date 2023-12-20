@@ -31,7 +31,8 @@ function EditProduct({ setProducts, productId, products }: {
             pictures: dataPreProduct?.pictures ?? [''],
             price: dataPreProduct?.price ?? 0,
             quantity: dataPreProduct?.quantity ?? 0,
-            description: dataPreProduct?.description ?? ''
+            description: dataPreProduct?.description ?? '',
+            attach: ''
         })
     }, [dataPreProduct])
     const dispatch = useAppDispatch()
@@ -45,7 +46,8 @@ function EditProduct({ setProducts, productId, products }: {
         pictures: [''],
         price: 0,
         quantity: 0,
-        description: ''
+        description: '',
+        attach: '',
     })
     useEffect(() => {
         const fetchCategories = async () => {

@@ -50,7 +50,7 @@ export async function editProduct(name: string, categories: string, price: numbe
         price,
         pictures,
         quantity,
-        description
+        description,
     }
     const res = await api.put(`/product?id=${productId}`, payload,{
         headers: {

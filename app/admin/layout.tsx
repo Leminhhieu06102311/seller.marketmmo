@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { IoIosSearch, IoMdClose, IoMdSettings } from 'react-icons/io'
 import { AiFillDashboard } from 'react-icons/ai'
 import { FaCartShopping } from 'react-icons/fa6'
-import { FiMenu } from 'react-icons/fi'
+import { FiLogOut, FiMenu } from 'react-icons/fi'
 import 'animate.css';
 import { usePathname, useRouter } from 'next/navigation'
 import 'react-toastify/dist/ReactToastify.css';
@@ -88,9 +88,11 @@ export default function ManagerLayout({
     }
     fetchUser()
   }, [])
-  useEffect(() => {
-    console.log(checkAdmin)
-  }, [checkAdmin] )
+  const handleLogout = () => {
+    Cookies.remove('token');
+    Cookies.remove('token_expiration');
+    router.push('/')
+  }
   return (
     <>
       {checkAdmin && (
@@ -145,6 +147,9 @@ export default function ManagerLayout({
                     <Link key={link.name} href={link.path} className={`mb-1 text-sm rounded-md capitalize  font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-white ${link.path === pathName ? 'bg-[#1877f214] text-primary' : 'text-black '}`}>{link.icon}<span>{link.name}</span></Link>
 
                   ))}
+                  <button className={`mb-1 text-sm rounded-md capitalize w-full font-semibold py-2 px-4 min-h-[44px] flex items-center cursor-pointer hover:bg-white `} onClick={handleLogout}>
+                    <FiLogOut className='text-[24px] mr-4' /><span>Đăng xuất</span>
+                  </button>
                 </nav>
               </div>
             </div>
