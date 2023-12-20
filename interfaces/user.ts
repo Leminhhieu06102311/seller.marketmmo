@@ -23,4 +23,20 @@ export default interface User {
     birthday: Date;
     updatedAt: Date;
   }
+  export interface UserComment {
+    _id: string;
+    username: string;
+    website: string | null;
+    isFlag: number;
+    name: string;
+    bio: string;
+    email: string;
+    role: string;
+    online: boolean;
+    avatar: string;
+    phone: string;
+    address: string;
+    birthday: string;
+}
+  
   

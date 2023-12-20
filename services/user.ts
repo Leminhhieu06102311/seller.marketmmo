@@ -18,7 +18,14 @@ export async function getUser(access_token: string) {
   return data;
 }
 
-
+export async function getUserComment(access_token: string) {
+  const res = await api.get("/auth/me", {
+    headers: {
+      Authorization: "Bearer " + access_token,
+    },
+  });
+  return res.data.data;
+}
 export async function getUserManager() {
   const res = await api.get(`/user`);
 
@@ -66,7 +73,6 @@ export async function getUserIdwithdrawalPay(access_token: string,userId: string
   return result
 }
 export async function editUser(userID: string, role: string) {
-
   try {
     const res = await api.patch(`/user/update-role?userID=${userID}&role=${role}`);
     return res;

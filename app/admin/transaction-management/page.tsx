@@ -34,12 +34,15 @@ export default function TransactionManagement() {
   useEffect(() => {
     const getTransactionManage = async () => {
       const res2 = await getTransactionManagement(token);
-      const sortedUsers = res2.sort((a: TransactionPayAdmin, b: TransactionPayAdmin) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
+      const sortedUsers = res2.sort(
+        (a: TransactionPayAdmin, b: TransactionPayAdmin) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+      );
       setPayHistory(sortedUsers);
       setCountPay(sortedUsers.length);
-      console.log(res2);
     };
 
     getTransactionManage();
@@ -52,90 +55,92 @@ export default function TransactionManagement() {
 
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
-    const openModal = (modalId: string) => {
-      setModals([...modals, modalId]);
-      console.log("asdsad");
-    };
-    const closeModal = (modalId: string) => {
-      setModals(modals.filter((id) => id !== modalId));
-    };
-    const handleSearch = (event: any) => {
-      const inputValue = event.target.value.trim();
+  }
+  const openModal = (modalId: string) => {
+    setModals([...modals, modalId]);
+    console.log("asdsad");
+  };
+  const closeModal = (modalId: string) => {
+    setModals(modals.filter((id) => id !== modalId));
+  };
+  const handleSearch = (event: any) => {
+    const inputValue = event.target.value.toLowerCase();
+  
+    if (inputValue.length > 0) {
+      const results = PayHistory?.filter((Pay) => {
+        // Handle cases where fields are null
+        const username = Pay.receiver.username ?? "";
+        const name = Pay.receiver.name ?? "";
+        // const phone = Pay.receiver.phone ?? "";
+        // const amount = Pay.amount ?? 0;
+  
+        return (
+          username.toLowerCase().includes(inputValue) ||
+          name.toLowerCase().includes(inputValue)
+          // amount.includes(inputValue) ||
+          // phone.includes(inputValue)
+        );
+      });
+  
+      setSearchResults(results);
+      setSearchTerm(event.target.value);
+      setTotalResults(results?.length ?? 0); // Set the total number of results
+    } else {
+      setSearchResults(undefined);
+      setSearchTerm("");
+      setTotalResults(0); // Reset the total number of results
+    }
+  };
 
-      if (inputValue.length > 0) {
-        const results = PayHistory?.filter((Pay) => {
-          // Handle cases where fields are null
-          const username = Pay.receiver.username ?? "";
-          const name = Pay.receiver.name ?? "";
-          // const phone = Pay.receiver.phone ?? "";
-          // const amount = Pay.amount ?? 0;
+  const handlePageClick = (pageNumber: any) => {
+    if (pageNumber < 1 || pageNumber > totalPages) {
+      return;
+    }
 
-          return (
-            username.includes(inputValue) || name.includes(inputValue)
-            // amount.includes(inputValue) ||
-            // phone.includes(inputValue)
-          );
-        });
+    setIsLoading(true);
 
-        setSearchResults(results);
-        setSearchTerm(inputValue);
-        setTotalResults(results?.length ?? 0); // Set the total number of results
-      } else {
-        setSearchResults(undefined);
-        setSearchTerm("");
-        setTotalResults(0); // Reset the total number of results
-      }
-    };
+    const newPageNumber = pageNumber;
 
-    const handlePageClick = (pageNumber: any) => {
-      if (pageNumber < 1 || pageNumber > totalPages) {
-        return;
-      }
+    setTimeout(() => {
+      setCurrentPage(newPageNumber);
+      setIsLoading(false);
+    }, 1000);
+  };
+  const handleTabClick = (index: any) => {
+    setActiveTab(index);
+  };
 
-      setIsLoading(true);
-
-      const newPageNumber = pageNumber;
-
-      setTimeout(() => {
-        setCurrentPage(newPageNumber);
-        setIsLoading(false);
-      }, 1000);
-    };
-    const handleTabClick = (index: any) => {
-      setActiveTab(index);
-    };
-
-    const handleCheckboxChange = (event: any, id: any) => {
-      setCheckedStatus((prevStatus) => ({
-        ...prevStatus,
-        [id]: event.target.checked,
-      }));
-    };
-    const handleEdit = (transactionID: string, receiverID: string) => {
-      toast.promise(
-        WithdrawalPaymentAccept(token, transactionID, receiverID),
-        {
-          pending: {
-            render: () => <div>Đang kiểm duyệt...</div>,
-            icon: "🔄",
-          },
-          success: {
-            render: () => {
-              window.location.reload();
-              return <div>Đã hoàn tất kiểm duyệt rút tiền!</div>;
-            },
-            icon: "✅",
-          },
-          error: {
-            render: () => <div>Lỗi khi kiểm duyệt. Thử lại sau!</div>,
-            icon: "❌",
-          },
+  const handleCheckboxChange = (event: any, id: any) => {
+    setCheckedStatus((prevStatus) => ({
+      ...prevStatus,
+      [id]: event.target.checked,
+    }));
+  };
+  const handleEdit = (transactionID: string, receiverID: string) => {
+    toast.promise(
+      WithdrawalPaymentAccept(token, transactionID, receiverID),
+      {
+        pending: {
+          render: () => <div>Đang kiểm duyệt...</div>,
+          icon: "🔄",
         },
-        {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        }
-      );
-    };
+        success: {
+          render: () => {
+            window.location.reload();
+            return <div>Đã hoàn tất kiểm duyệt rút tiền!</div>;
+          },
+          icon: "✅",
+        },
+        error: {
+          render: () => <div>Lỗi khi kiểm duyệt. Thử lại sau!</div>,
+          icon: "❌",
+        },
+      },
+      {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      }
+    );
+  };
     return (
       <div className="p-6 max-w-[1536px] w-full m-auto">
         <div className="mb-3">
@@ -149,11 +154,10 @@ export default function TransactionManagement() {
                 type="text"
                 placeholder="Search..."
                 className="bg-transparent focus:outline-none w-full"
-                onInput={handleSearch}
+                onChange={handleSearch}
               />
             </div>
             <div className="flex items-center gap-x-4">
-              {" "}
               {searchTerm.length > 0 ? (
                 (searchResults ?? []).length > 0 ? (
                   <>
@@ -201,106 +205,108 @@ export default function TransactionManagement() {
                     <>
                       {searchResults?.map((pay) => (
                         <>
-                        <tr className="bg-white border-t hover:bg-gray-50">
-                          <td className="p-4">
-                            <span className="text-sm font-semibold">
-                              {pay.receiver.username}
-                            </span>
-                          </td>
-                          <td className="p-4 text-sm">{pay.receiver.name}</td>
-                          <td className="p-4 text-sm">
-                            {pay.receiver.bank === null && (
-                              <div className="text-center">--</div>
-                            )}
-                            {pay.receiver.bank !== null && (
-                              <>{pay.receiver.bank}</>
-                            )}
-                          </td>
-                          <td className="p-4 text-sm">{pay.depositor.phone}</td>
-                          <td className="p-4 text-sm">
-                            {new Intl.NumberFormat("vi-VN", {
-                              style: "currency",
-                              currency: "VND",
-                            }).format(pay.amount)}{" "}
-                          </td>
-                          <td className="p-4 text-sm">
-                            {pay.status === "Thành công" && (
-                              <span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs whitespace-nowrap">
-                                Đã duyệt
+                          <tr className="bg-white border-t hover:bg-gray-50">
+                            <td className="p-4">
+                              <span className="text-sm font-semibold">
+                                {pay.receiver.username}
                               </span>
-                            )}
-                            {pay.status === "Đang xử lý" && (
-                              <span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs whitespace-nowrap">
-                                Chưa duyệt
-                              </span>
-                            )}
-                          </td>
-                          <td className="p-4 text-sm">
-                            {pay.status === "Thành công" && (
-                              <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                  type="checkbox"
-                                  className="sr-only peer"
-                                  checked
-                                />
-                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-                              </label>
-                            )}
-                            {pay.status === "Đang xử lý" && (
-                              <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                  type="checkbox"
-                                  className="sr-only peer"
-                                  checked={checkedStatus[pay._id] || false}
-                                  onChange={(event) =>
-                                    handleCheckboxChange(event, pay._id)
-                                  }
-                                />
-                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-                              </label>
-                            )}
-                          </td>
-                          <th className="text-start p-4 relative">
-                            {pay.status === "Thành công" && (
-                              <div className="text-xs flex items-center gap-x-1 text-[blue]">
-                                Đã duyệt{" "}
-                                <svg
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M10 0C4.49 0 0 4.49 0 10C0 15.51 4.49 20 10 20C15.51 20 20 15.51 20 10C20 4.49 15.51 0 10 0ZM14.78 7.7L9.11 13.37C8.97 13.51 8.78 13.59 8.58 13.59C8.38 13.59 8.19 13.51 8.05 13.37L5.22 10.54C4.93 10.25 4.93 9.77 5.22 9.48C5.51 9.19 5.99 9.19 6.28 9.48L8.58 11.78L13.72 6.64C14.01 6.35 14.49 6.35 14.78 6.64C15.07 6.93 15.07 7.4 14.78 7.7Z"
-                                    fill="#0000FF"
-                                    fill-opacity="0.733333"
+                            </td>
+                            <td className="p-4 text-sm">{pay.receiver.name}</td>
+                            <td className="p-4 text-sm">
+                              {pay.receiver.bank === null && (
+                                <div className="text-center">--</div>
+                              )}
+                              {pay.receiver.bank !== null && (
+                                <>{pay.receiver.bank}</>
+                              )}
+                            </td>
+                            <td className="p-4 text-sm">
+                              {pay.depositor.phone}
+                            </td>
+                            <td className="p-4 text-sm">
+                              {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(pay.amount)}{" "}
+                            </td>
+                            <td className="p-4 text-sm">
+                              {pay.status === "Thành công" && (
+                                <span className="text-[green] bg-green-50 border rounded-lg border-[green] px-3 py-1 text-xs whitespace-nowrap">
+                                  Đã duyệt
+                                </span>
+                              )}
+                              {pay.status === "Đang xử lý" && (
+                                <span className="text-[red] bg-red-50 border rounded-lg border-[red] px-3 py-1 text-xs whitespace-nowrap">
+                                  Chưa duyệt
+                                </span>
+                              )}
+                            </td>
+                            <td className="p-4 text-sm">
+                              {pay.status === "Thành công" && (
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked
                                   />
-                                </svg>
-                              </div>
-                            )}
-                            {pay.status === "Đang xử lý" && (
-                              <>
-                                {checkedStatus[pay._id] ? (
-                                  <>
-                                    <button
-                                      onClick={() => openModal(pay._id)}
-                                      className="text-[white] bg-[blue] border rounded-lg px-3 py-2 text-xs whitespace-nowrap"
-                                    >
-                                      Hoàn tất
-                                    </button>
-                                  </>
-                                ) : (
-                                  <></>
-                                )}
-                              </>
-                            )}
+                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+                                </label>
+                              )}
+                              {pay.status === "Đang xử lý" && (
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked={checkedStatus[pay._id] || false}
+                                    onChange={(event) =>
+                                      handleCheckboxChange(event, pay._id)
+                                    }
+                                  />
+                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+                                </label>
+                              )}
+                            </td>
+                            <th className="text-start p-4 relative">
+                              {pay.status === "Thành công" && (
+                                <div className="text-xs flex items-center gap-x-1 text-[blue]">
+                                  Đã duyệt{" "}
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M10 0C4.49 0 0 4.49 0 10C0 15.51 4.49 20 10 20C15.51 20 20 15.51 20 10C20 4.49 15.51 0 10 0ZM14.78 7.7L9.11 13.37C8.97 13.51 8.78 13.59 8.58 13.59C8.38 13.59 8.19 13.51 8.05 13.37L5.22 10.54C4.93 10.25 4.93 9.77 5.22 9.48C5.51 9.19 5.99 9.19 6.28 9.48L8.58 11.78L13.72 6.64C14.01 6.35 14.49 6.35 14.78 6.64C15.07 6.93 15.07 7.4 14.78 7.7Z"
+                                      fill="#0000FF"
+                                      fill-opacity="0.733333"
+                                    />
+                                  </svg>
+                                </div>
+                              )}
+                              {pay.status === "Đang xử lý" && (
+                                <>
+                                  {checkedStatus[pay._id] ? (
+                                    <>
+                                      <button
+                                        onClick={() => openModal(pay._id)}
+                                        className="text-[white] bg-[blue] border rounded-lg px-3 py-2 text-xs whitespace-nowrap"
+                                      >
+                                        Hoàn tất
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </>
+                              )}
 
-                            {/* <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
+                              {/* <button className="text-lg p-1 hover:bg-gray-200 rounded-full text-[red] ">
                         <MdDeleteForever />
                       </button> */}
-                          </th>
-                        </tr>
+                            </th>
+                          </tr>
                         </>
                       ))}
                     </>
@@ -725,5 +731,5 @@ export default function TransactionManagement() {
         </div>
       </div>
     );
-  }
+
 }
