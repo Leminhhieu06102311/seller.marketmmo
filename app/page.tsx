@@ -21,7 +21,7 @@ export default function Login() {
     const [messageErrorLogin, setMessageErrorLogin] = useState('');
     const [notification, setNotification] = useState(false);
     useEffect(() => {
-        const checkLogged  = async () => {
+        const checkLogged = async () => {
             const token = Cookies.get('token')
             if (token) {
                 const dataUser = await getUser(token);
@@ -29,7 +29,7 @@ export default function Login() {
                 if (dataUser.role === ENUM_ROLE_TYPE.SELLER) {
                     router.replace('/seller')
                     console.log('Logged Seller')
-                    return 
+                    return
                 } else if (dataUser.role === ENUM_ROLE_TYPE.ADMINISTRATION) {
                     router.replace('/admin')
                     console.log('Logged Admin')
@@ -89,6 +89,7 @@ export default function Login() {
                         // Set another cookie 'myCookieExpiration' to store the expiration time
                         Cookies.set('token_expiration', currentDate.toUTCString(), { expires: expirationTimeInSeconds });
                         router.push("/admin");
+                        return "Đăng nhập thành công"
                     } else {
                         return "Bạn là người mua nên không thể bán vui lòng đăng kí tài khoản người bán trước khi đăng nhập"
                     }
@@ -116,7 +117,7 @@ export default function Login() {
             }
         })
     };
-    
+
     return (
         <section className="flex flex-col flex-1 justify-center w-full  ">
             <div className=" flex justify-center items-center grow m-0 p-0  pt-8 h-screen  ">

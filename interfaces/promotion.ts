@@ -17,3 +17,10 @@ export interface Promotion {
     updatedAt:Date,
    
   }
+
+
+  export interface PromotionVoucher {
+    _id: string;
+    name: string;
+    description: string | null;
+}

@@ -60,6 +60,7 @@ export default function Promotion() {
 
   const [activeTab, setActiveTab] = useState(0);
   const dispatch = useDispatch()
+  const [selectedVoucherType, setSelectedVoucherType] = useState('');
 
   const showTab = (index: SetStateAction<number>) => {
     setActiveTab(index);
@@ -106,7 +107,11 @@ export default function Promotion() {
           </div>
         </div>
         <div className='bg-white rounded-lg px-6 py-4 shadow-lg'>
-          <h1 className='text-lg font-semibold'>Công cụ quảng cáo</h1>
+          <div className='flex justify-between mb-2'>
+            <h1 className='text-lg font-semibold'>Công cụ quảng cáo</h1>
+            <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2 hover:bg-primary hover:text-white' onClick={handleShowListPromotion}>Khuyến mãi của tôi</button>
+          </div>
+
           <div className='grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-2 md:gap-5 lg:gap-10 items-start'>
             <div className='h-full'>
               <div className='border p-4 rounded-lg flex flex-col justify-between h-full'>
@@ -120,7 +125,6 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2' onClick={handleShowListPromotion}>Khuyến mãi của tôi</button>
                   <Link href={`/seller/promotion/${promotionType.discountProduct}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md' >Tạo</Link>
                 </div>
               </div>
@@ -137,7 +141,6 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
                   <button disabled className='bg-blue-400 text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</button>
                 </div>
               </div>
@@ -154,8 +157,7 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
-                  <Link href={`/seller/promotion/${promotionType.buyALot}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
+                  <button disabled className='bg-blue-400 text-sm text-white font-semibold px-3 py-2 rounded-md'>Tạo</button>
                 </div>
               </div>
             </div>
@@ -171,7 +173,6 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
                   <Link href={`/seller/promotion/${promotionType.voucher}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
                 </div>
               </div>
@@ -188,7 +189,6 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
                   <button disabled className='bg-blue-400 text-sm text-white font-semibold px-3 py-2 rounded-md' >Tạo</button>
                 </div>
               </div>
@@ -205,7 +205,6 @@ export default function Promotion() {
                   </div>
                 </div>
                 <div className='flex justify-end'>
-                  <button className='bg-gray-50 text-sm font-semibold px-3 py-2 rounded-md mr-2'>Khuyến mãi của tôi</button>
                   <Link href={`/seller/promotion/${promotionType.gift}`} className='bg-primary text-sm text-white font-semibold px-3 py-2 rounded-md '>Tạo</Link>
                 </div>
               </div>

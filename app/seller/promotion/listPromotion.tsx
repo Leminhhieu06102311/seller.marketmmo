@@ -3,17 +3,35 @@ import { SetStateAction, useState, useEffect, memo } from "react";
 import { IoIosAddCircleOutline, IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { ENUM_NAME_MODAL } from "@/enum/name_modal";
 import ContentModal from "@/components/Modal";
-import { deletePromotion, getPromotion } from "@/services/promotion";
+import { deletePromotion, getPromotion, getPromotionVoucher } from "@/services/promotion";
 import { Promotion } from "@/interfaces/promotion";
 import Cookies from 'js-cookie'
 import { toast } from "react-toastify";
-
+import { PromotionVoucher } from '@/interfaces/promotion'
+import { MdDeleteForever } from "react-icons/md";
 
 function ListPromotion() {
     const [page, setPage] = useState(1)
     const [promotions, setPromotions] = useState<Promotion[]>()
+    const [promotionVoucher, setPromotionVoucher] = useState<PromotionVoucher[]>([]);
     const [activeTab, setActiveTab] = useState(0);
     const token = Cookies.get('token')
+
+    type GroupedPromotions = Record<string, Promotion[]>;
+
+    const groupedPromotions: GroupedPromotions = {};
+
+    promotions?.forEach((promotion) => {
+        if (promotion.voucher) {
+            const voucherName = promotion.voucher.name;
+            if (!groupedPromotions[voucherName]) {
+                groupedPromotions[voucherName] = [];
+            }
+            groupedPromotions[voucherName].push(promotion);
+        }
+    })
+
+    console.log(groupedPromotions);
 
     const formattedDate = (date: Date) => { return new Date(date).toISOString().split('T')[0] };
 
@@ -21,14 +39,20 @@ function ListPromotion() {
     const showTab = (index: SetStateAction<number>) => {
         setActiveTab(index);
     };
+    const fetchData = async () => {
+        try {
+            const promotionData = await getPromotion(token);
+            setPromotions(promotionData);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await getPromotion(token)
-            setPromotions(res)
+            const voucherData = await getPromotionVoucher();
+            setPromotionVoucher(voucherData.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
         }
-        fetchData()
-    }, [page])
+    };
+    useEffect(() => {
+        fetchData();
+    }, [page, token]);
 
     const handleDeletePromotion = (promotionID: string) => {
         toast.promise(deletePromotion(promotionID, token), {
@@ -39,6 +63,7 @@ function ListPromotion() {
             },
             success: {
                 async render({ data }) {
+                    fetchData()
                     return "Xóa mã khuyến mãi thành công"
                 },
                 // other options
@@ -64,43 +89,45 @@ function ListPromotion() {
         {
             label: 'Tất cả', content:
                 <div>
-                    <table className="min-w-full table-auto border-collapse">
-                        <thead>
-                            <tr className="border-t bg-white">
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Mã giảm giá</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Loại mã giảm giá</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Ngày bắt đầu</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Ngày kết thúc</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Số tiền mua tối thiểu</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Giảm giá</th>
-                                <th className=" text-start text-sm p-4 whitespace-nowrap">Danh sách các sản phẩm được áp dụng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {promotions && promotions.map((promotion, index) => {
-                                return (
-                                    <tr key={promotion._id} className="bg-white border-t hover:bg-gray-50">
-                                        <td className="p-4 whitespace-nowrap text-sm">{index + 1}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.code}</td>
-                                        <td className="p-4 whitespace-nowrap md:sticky">
-                                            {/* {promotion.voucher.name} */}
-                                        </td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{formattedDate(promotion.start_date)}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{formattedDate(promotion.end_date)}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.min_purchase_amount}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.discount}</td>
-                                        <td className="p-4 whitespace-nowrap text-sm">{promotion.items}</td>
-                                        <th className="text-start p-4 relative">
-                                            <button className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 " onClick={() => handleDeletePromotion(promotion._id)}>
-                                                <IoIosAddCircleOutline />
-                                            </button>
-                                        </th>
-                                    </tr>
-
-                                )
-                            })}
-                        </tbody>
-                    </table>
+                    <div className="bg-white">
+                        <table className="min-w-full table-auto border-collapse">
+                            <thead>
+                                <tr className="border-t bg-white">
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">STT</th>
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">Mã giảm giá</th>
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">Loại mã giảm giá</th>
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">Ngày bắt đầu</th>
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">Ngày kết thúc</th>
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">Số tiền mua tối thiểu</th>
+                                    <th className=" text-start text-sm p-4 whitespace-nowrap">Giảm giá</th>
+                                    {/* <th className=" text-start text-sm p-4 whitespace-nowrap">Danh sách các sản phẩm được áp dụng</th> */}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.entries(groupedPromotions).map(([voucherName, promotionsForVoucher], index) => (
+                                    promotionsForVoucher.slice(0, 3).map((promotion, innerIndex) => (
+                                        <tr key={promotion._id} className="bg-white border-t hover:bg-gray-50">
+                                            <td className="p-4 whitespace-nowrap text-sm">{index * 3 + innerIndex + 1}</td>
+                                            <td className="p-4 whitespace-nowrap text-sm">{promotion.code}</td>
+                                            <td className="p-4 whitespace-nowrap md:sticky">
+                                                {voucherName}
+                                            </td>
+                                            <td className="p-4 whitespace-nowrap text-sm">{formattedDate(promotion.start_date)}</td>
+                                            <td className="p-4 whitespace-nowrap text-sm">{formattedDate(promotion.end_date)}</td>
+                                            <td className="p-4 whitespace-nowrap text-sm">{promotion.min_purchase_amount}</td>
+                                            <td className="p-4 whitespace-nowrap text-sm">{promotion.discount}</td>
+                                            <td className="p-4 whitespace-nowrap text-sm">{promotion.items}</td>
+                                            <th className="text-start p-4 relative">
+                                                <button className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 " onClick={() => handleDeletePromotion(promotion._id)}>
+                                                    <MdDeleteForever className="text-[30px] text-red-500" />
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    ))
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div >
         }
     ];
@@ -109,7 +136,7 @@ function ListPromotion() {
     }, [])
     return (
         <ContentModal nameModal={ENUM_NAME_MODAL.LISTPROMOTION_MODAL}>
-            <div className="mx-auto shadow-lg rounded-xl w-4/5">
+            <div className="mx-auto shadow-lg rounded-xl w-4/5 mt-4">
                 <ul className="flex px-6 py-4 bg-white rounded-t-xl overflow-hidden">
                     {tabs.map((tab, index) => (
                         <li
