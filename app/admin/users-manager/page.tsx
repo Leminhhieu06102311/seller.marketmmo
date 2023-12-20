@@ -36,9 +36,10 @@ export default function UsersManager() {
   useEffect(() => {
     const getUser = async () => {
       const res = await getUserManager();
-      // Sắp xếp danh sách người dùng từ ngày gần nhất đến xa nhất
       const sortedUsers = res.sort((a: User, b: User) => {
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        return (
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
       });
       setUser(sortedUsers);
       setLoadingPage(false);
@@ -105,9 +106,10 @@ export default function UsersManager() {
       },
       success: {
         render: async () => {
-            setUser(user?.filter((item) => item._id !== idUser));toast.dismiss();
-            setSearchResults(user?.filter((item) => item._id !== idUser));
-           // Đóng toast hiển thị xóa User
+          setUser(user?.filter((item) => item._id !== idUser));
+          toast.dismiss();
+          setSearchResults(user?.filter((item) => item._id !== idUser));
+          // Đóng toast hiển thị xóa User
           return <div>Chỉnh sửa trạng thái thành công!</div>;
         },
       },
@@ -216,8 +218,8 @@ export default function UsersManager() {
                     type="text"
                     placeholder="Search..."
                     value={searchTerm}
-                    className="bg-transparent focus:outline-none w-full"
                     onInput={handleSearch}
+                    className="bg-transparent focus:outline-none w-full"
                   />
                 </div>
                 <div className="flex items-center gap-x-4">
