@@ -94,22 +94,22 @@ export default function Order() {
                                     </tr>
                                 ))}
                             </>) : (
-                               <tr className="bg-white border-t hover:bg-gray-50">
-                               <td className="p-4 whitespace-nowrap md:sticky">
-                                  
-                               </td>
-                               <td className="p-4 whitespace-nowrap text-sm"></td>
-                               <td className="p-4 whitespace-nowrap text-sm text-slate-900 font-medium ">Không có dữ liệu đơn hàng nào</td>
-                               <td className="p-4 whitespace-nowrap text-sm"></td>
-                               <td className="p-4 whitespace-nowrap text-sm font-semibold">
-                                  
+                                <tr className="bg-white border-t hover:bg-gray-50">
+                                    <td className="p-4 whitespace-nowrap md:sticky">
 
-                               </td>
-                               <td className="p-4 whitespace-nowrap text-sm font-semibold ">
-                                   
-                               </td>
+                                    </td>
+                                    <td className="p-4 whitespace-nowrap text-sm"></td>
+                                    <td className="p-4 whitespace-nowrap text-sm text-slate-900 font-medium ">Không có dữ liệu đơn hàng nào</td>
+                                    <td className="p-4 whitespace-nowrap text-sm"></td>
+                                    <td className="p-4 whitespace-nowrap text-sm font-semibold">
 
-                           </tr>
+
+                                    </td>
+                                    <td className="p-4 whitespace-nowrap text-sm font-semibold ">
+
+                                    </td>
+
+                                </tr>
                             )}
 
                         </tbody>
@@ -135,7 +135,7 @@ export default function Order() {
                         <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                             <div>
                                 <div className="text-sm text-gray-700">
-                                    Tổng <b>{historiesOrder.length}</b> kết quả 
+                                    Tổng <b>{historiesOrder.length}</b> kết quả
                                 </div>
                             </div>
                             <div>
@@ -144,7 +144,7 @@ export default function Order() {
                                     aria-label="Pagination"
                                 >
                                     <button
-                                        onClick={() => setPage((pre : number) => {
+                                        onClick={() => setPage((pre: number) => {
                                             if (pre === 1) {
                                                 return 1
                                             } else {
@@ -169,7 +169,7 @@ export default function Order() {
                                     </button>
 
                                     <button
-                                        onClick={() => setPage((pre : number) => pre + 1)}
+                                        onClick={() => setPage((pre: number) => pre + 1)}
                                         className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                                     >
                                         <span className="sr-only">Next</span>

@@ -62,3 +62,10 @@ export async function getCategories() {
     const res = await api.get(`/categories`)    
     return res.data.data
 }
+
+export async function getProductByCate() {
+    const res = await api.get('/categories/with-products')
+
+    const { data } = res.data
+    return data
+}

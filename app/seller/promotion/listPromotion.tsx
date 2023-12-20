@@ -3,9 +3,10 @@ import { SetStateAction, useState, useEffect, memo } from "react";
 import { IoIosAddCircleOutline, IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { ENUM_NAME_MODAL } from "@/enum/name_modal";
 import ContentModal from "@/components/Modal";
-import { getPromotion } from "@/services/promotion";
+import { deletePromotion, getPromotion } from "@/services/promotion";
 import { Promotion } from "@/interfaces/promotion";
 import Cookies from 'js-cookie'
+import { toast } from "react-toastify";
 
 
 function ListPromotion() {
@@ -29,6 +30,36 @@ function ListPromotion() {
         fetchData()
     }, [page])
 
+    const handleDeletePromotion = (promotionID: string) => {
+        toast.promise(deletePromotion(promotionID, token), {
+            pending: {
+                render() {
+                    return "vui lòng đợi!"
+                },
+            },
+            success: {
+                async render({ data }) {
+                    return "Xóa mã khuyến mãi thành công"
+                },
+                // other options
+                icon: "🟢",
+            },
+            error: {
+                render: ({ data }) => {
+                    console.log(data)
+                    const error: any = data
+                    if (error.response && error.response.status === 401) {
+                        // Lỗi 401 có nghĩa là "Sai tài khoản hoặc mật khẩu"
+                        console.log(error);
+                    } else {
+                        console.error("Lỗi:", error);
+                    }
+                    return <div>Lỗi, xin vui lòng thử lại. {error.response.data.message}</div>
+                }
+            }
+        })
+    }
+
     const tabs = [
         {
             label: 'Tất cả', content:
@@ -46,9 +77,10 @@ function ListPromotion() {
                             </tr>
                         </thead>
                         <tbody>
-                            {promotions && promotions.map((promotion) => {
+                            {promotions && promotions.map((promotion, index) => {
                                 return (
                                     <tr key={promotion._id} className="bg-white border-t hover:bg-gray-50">
+                                        <td className="p-4 whitespace-nowrap text-sm">{index + 1}</td>
                                         <td className="p-4 whitespace-nowrap text-sm">{promotion.code}</td>
                                         <td className="p-4 whitespace-nowrap md:sticky">
                                             {/* {promotion.voucher.name} */}
@@ -59,7 +91,7 @@ function ListPromotion() {
                                         <td className="p-4 whitespace-nowrap text-sm">{promotion.discount}</td>
                                         <td className="p-4 whitespace-nowrap text-sm">{promotion.items}</td>
                                         <th className="text-start p-4 relative">
-                                            <button className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 ">
+                                            <button className="text-lg p-1 hover:bg-gray-200 rounded-full mr-1 " onClick={() => handleDeletePromotion(promotion._id)}>
                                                 <IoIosAddCircleOutline />
                                             </button>
                                         </th>
