@@ -74,8 +74,6 @@ export default function UsersManager() {
   const openModal = (modalId: string, roleType: string) => {
     if (roleType === ENUM_ROLE_TYPE.ADMINISTRATION) {
       setModalsErr([...modalsErr, modalId]);
-    } else if (roleType === ENUM_ROLE_TYPE.SELLER) {
-      setModalsErr([...modalsErr, modalId]);
     } else {
       setModals([...modals, modalId]);
     }
@@ -173,27 +171,28 @@ export default function UsersManager() {
   };
 
   const handleSearch = (event: any) => {
-    const inputValue = event.target.value.trim();
-
-    if (inputValue.length > 0) {
-      const results = user?.filter((userData) => {
-        // Handle cases where fields are null
-        const username = userData.username ?? "";
-        const name = userData.name ?? "";
-        const email = userData.email ?? "";
-        const phone = userData.phone ?? "";
-
+    const inputValue = event.target.value.toLowerCase();
+  
+    if (user && user.length > 0) {
+      const results = user.filter((userData) => {
+        const username = userData.username
+          ? userData.username.toLowerCase()
+          : "";
+        const name = userData.name ? userData.name.toLowerCase() : "";
+        const email = userData.email ? userData.email.toLowerCase() : "";
+        const phone = userData.phone ? userData.phone.toLowerCase() : "";
+  
         return (
-          username.includes(inputValue) ||
-          name.includes(inputValue) ||
-          email.includes(inputValue) ||
-          phone.includes(inputValue)
+          username.toLowerCase().includes(inputValue) ||
+          name.toLowerCase().includes(inputValue) ||
+          email.toLowerCase().includes(inputValue) ||
+          phone.toLowerCase().includes(inputValue)
         );
       });
-
+  
       setSearchResults(results);
-      setSearchTerm(inputValue);
-      setTotalResults(results?.length ?? 0); // Set the total number of results
+      setSearchTerm(event.target.value);
+      setTotalResults(results.length || 0); // Set the total number of results
     } else {
       setSearchResults(undefined);
       setSearchTerm("");
@@ -218,7 +217,7 @@ export default function UsersManager() {
                     type="text"
                     placeholder="Search..."
                     value={searchTerm}
-                    onInput={handleSearch}
+                    onChange={handleSearch}
                     className="bg-transparent focus:outline-none w-full"
                   />
                 </div>
@@ -616,6 +615,19 @@ export default function UsersManager() {
                                           </option>
                                         </>
                                       )}
+                                      {users.role === ENUM_ROLE_TYPE.SELLER && (
+                                        <>
+                                          <option value="651a93c59df8ccec8945a68f">
+                                            User
+                                          </option>
+                                          <option
+                                            selected
+                                            value="651a93d79df8ccec8945a690"
+                                          >
+                                            Seller
+                                          </option>
+                                        </>
+                                      )}
                                     </select>
                                   </label>
                                 </div>
@@ -736,6 +748,19 @@ export default function UsersManager() {
                                             User
                                           </option>
                                           <option value="651a93d79df8ccec8945a690">
+                                            Seller
+                                          </option>
+                                        </>
+                                      )}
+                                      {users.role === ENUM_ROLE_TYPE.SELLER && (
+                                        <>
+                                          <option value="651a93c59df8ccec8945a68f">
+                                            User
+                                          </option>
+                                          <option
+                                            selected
+                                            value="651a93d79df8ccec8945a690"
+                                          >
                                             Seller
                                           </option>
                                         </>
