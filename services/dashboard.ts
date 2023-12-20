@@ -16,6 +16,6 @@ export async function getDashBoardSeller(access_token: string,start_date : strin
         Authorization: 'Bearer ' + access_token
       }
     });
-    const { result } = res.data.data
-    return result
+    // const { result } = res.data.data
+    return res
 }

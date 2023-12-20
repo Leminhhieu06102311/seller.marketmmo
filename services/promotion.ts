@@ -18,7 +18,16 @@ export async function getPromotion(access_token:string) {
       }
   })
     const { result } = res.data.data
-    console.log(result);
-    
     return result
+}
+
+
+export async function deletePromotion(promotionID: string, access_token:string) {
+  const res = await api.delete(`/promotion?promotionID${promotionID}`,{
+      headers:
+      {
+      Authorization: "Bearer " + access_token,
+      }
+  });
+  return res.data;
 }

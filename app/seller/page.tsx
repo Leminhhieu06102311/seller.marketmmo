@@ -25,91 +25,129 @@ import {
     LineChart,
 } from "recharts";
 import { getDashBoardSeller } from "@/services/dashboard";
+import { HistoryOrder } from "@/interfaces/history_order";
+import { fetchAllHistoriesOrder } from "@/services/HistoryOrder";
+import { getAllProducts, getCategories } from "@/services/product";
+import { Product } from "@/interfaces/product";
+import Category from "@/interfaces/category";
 export default function Admin({ }) {
     const token = Cookies.get("token");
     const [dashboard, setDashboard] = useState<DashBoard>();
     const [loadingPage, setLoadingPage] = useState(true);
     const [selectedType, setSelectedType] = useState("Ngày");
+    const [historiesOrder, setHistoriesOrder] = useState<HistoryOrder[]>([])
+    const [page, setPage] = useState(1)
+    const [products, setProducts] = useState<Product[]>()
+    const [categories, setCategories] = useState<Category[]>()
+    // const [productCountByCategory, setProductCountByCategory] = useState({});
 
     useEffect(() => {
         import("preline");
     }, []);
-    const data = [
-        {
-            name: "Page A",
-            uv: 590,
-            pv: 800,
-            amt: 1400,
-        },
-        {
-            name: "Page B",
-            uv: 868,
-            pv: 967,
-            amt: 1506,
-        },
-        {
-            name: "Page C",
-            uv: 1397,
-            pv: 1098,
-            amt: 989,
-        },
-        {
-            name: "Page D",
-            uv: 1480,
-            pv: 1200,
-            amt: 1228,
-        },
-        {
-            name: "Page E",
-            uv: 1520,
-            pv: 1108,
-            amt: 1100,
-        },
-        {
-            name: "Page F",
-            uv: 1400,
-            pv: 680,
-            amt: 1700,
-        },
-    ];
+
+    useEffect(() => {
+        const getHistoriesOrder = async () => {
+            const res = await fetchAllHistoriesOrder(token, page)
+            setHistoriesOrder(res)
+        }
+        getHistoriesOrder()
+    }, [page])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [categoryResponse, productResponse] = await Promise.all([getCategories(), getAllProducts(token, page)]);
+                setCategories(categoryResponse.data);
+                setProducts(productResponse.data.result);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        fetchData()
+    }, [page, token])
+
+    // Sắp xếp lịch sử theo thời gian giảm dần
+    const sortedHistories = historiesOrder.sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+    });
+
+    const currentDate = new Date();
+
+    // Lấy danh sách các giao dịch trong khoảng 6 ngày trước đến thời điểm hiện tại
+    const transactionsLastSixDays = sortedHistories.filter(history => {
+        const historyDate = new Date(history.createdAt);
+        const timeDifference = currentDate.getTime() - historyDate.getTime();
+        const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+        return daysDifference >= 0 && daysDifference < 6;
+    });
+
+    const perday = new Map<string, { uv: number, pv: number, total: number }>();
+
+    // Tính số lượng giao dịch cho mỗi ngày trong khoảng thời gian trên
+    transactionsLastSixDays.forEach(history => {
+        const dateKey = new Date(history.createdAt).toDateString();
+        const count = perday.get(dateKey) || { uv: 0, pv: 0, total: 0 };
+
+        // Kiểm tra loại giao dịch và tăng số lượng tương ứng
+        if (history.status === 'Giao dịch thành công') {
+            count.uv += 1; // Giao dịch thành công (uv)
+        } else if (history.status === 'Giao dịch thất bại') {
+            count.pv += 1; // Giao dịch thất bại (pv)
+        }
+
+        count.total += 1;
+
+        perday.set(dateKey, count);
+    });
+
+
+    const newData = Array.from(perday.entries()).map(([date, { uv, pv, total }]) => ({
+        name: date,
+        uv,
+        pv: total,
+        amt: pv,
+    }
+    ));
+
+    const data = [...newData];
+
     const data2 = [
         {
             subject: "Math",
             A: 120,
-            B: 110,
             fullMark: 150,
         },
         {
             subject: "Chinese",
             A: 98,
-            B: 130,
             fullMark: 150,
         },
         {
             subject: "English",
             A: 86,
-            B: 130,
             fullMark: 150,
         },
         {
             subject: "Geography",
             A: 99,
-            B: 100,
             fullMark: 150,
         },
         {
             subject: "Physics",
             A: 85,
-            B: 90,
             fullMark: 150,
         },
         {
             subject: "History",
             A: 65,
-            B: 85,
             fullMark: 150,
         },
     ];
+
+
     const today = new Date();
     const startDateDasy = new Date(
         today.getFullYear(),
@@ -162,14 +200,8 @@ export default function Admin({ }) {
                 startDate = formattedStartYear;
                 endDate = encodedEndDate;
             }
-            console.log(token);
-            console.log(startDate);
-            console.log(endDate);
-
             const res = await getDashBoardSeller(token, startDate, endDate);
-            console.log(res);
-
-            setDashboard(res);
+            setDashboard(res.data.data);
             setLoadingPage(false);
         };
 
@@ -360,7 +392,7 @@ export default function Admin({ }) {
                                         </div>
                                         <div className="flex flex-col ml-6">
                                             <h4 className="text-lg font-bold">
-                                                {dashboard?.countProjects} Sản phẩm
+                                                {dashboard?.countProducts} Sản phẩm
                                             </h4>
                                             <h6 className="text-xs">Tổng sản phẩm</h6>
                                         </div>
@@ -388,30 +420,33 @@ export default function Admin({ }) {
                                     <XAxis
                                         dataKey="name"
                                         label={{
-                                            value: "Pages",
+                                            value: "ngày",
                                             position: "insideBottomRight",
                                             offset: 0,
                                         }}
                                         scale="band"
+                                        domain={[0, data.length - 1]}
                                     />
                                     <YAxis
                                         label={{
-                                            value: "Index",
+                                            value: "Số đơn hàng",
                                             angle: -90,
                                             position: "insideLeft",
                                         }}
                                     />
                                     <Tooltip />
                                     <Legend />
+                                    <Bar dataKey="pv" barSize={20} fill="#413ea0" name="Tổng đơn hàng" />
                                     <Area
                                         key="recharts1-clip"
                                         type="monotone"
                                         dataKey="amt"
-                                        fill="#8884d8"
-                                        stroke="#8884d8"
+                                        fill="white"
+                                        stroke="red"
+                                        name="Đơn hàng chưa hoàn thành/bị hủy"
                                     />
-                                    <Bar dataKey="pv" barSize={20} fill="#413ea0" />
-                                    <Line type="monotone" dataKey="uv" stroke="#ff7300" />
+                                    {/* <Line type="monotone" dataKey="atm" stroke="red" name="Đơn hàng chưa hoàn thành/bị hủy" /> */}
+                                    <Line type="monotone" dataKey="uv" stroke="green" fill="" name="Đơn hàng đã hoàn thành" />
                                 </ComposedChart>
                             </ResponsiveContainer>
                         </div>
@@ -440,14 +475,14 @@ export default function Admin({ }) {
                                         fillOpacity={0.6}
                                         fontSize={12}
                                     />
-                                    <Radar
+                                    {/* <Radar
                                         name="Lily"
                                         dataKey="B"
                                         stroke="#82ca9d"
                                         fill="#82ca9d"
                                         fillOpacity={0.6}
                                         fontSize={12}
-                                    />
+                                    /> */}
                                     <Legend />
                                 </RadarChart>
                             </ResponsiveContainer>
