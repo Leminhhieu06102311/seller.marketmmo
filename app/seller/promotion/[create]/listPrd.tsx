@@ -69,6 +69,7 @@ function ListProd({ onProductIdsChange }: ListProdProps) {
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
                             <tr className="border-t bg-white">
+                                <th className=" text-start text-sm p-4 whitespace-nowrap">STT</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Tên sản phẩm</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Giá</th>
                                 <th className=" text-start text-sm p-4 whitespace-nowrap">Số lượng</th>
@@ -77,10 +78,11 @@ function ListProd({ onProductIdsChange }: ListProdProps) {
                             </tr>
                         </thead>
                         <tbody>
-                            {products && products.slice(0, 5).map((product) => {
+                            {products && products.slice(0, 5).map((product, index) => {
                                 const isProductAdded = selectedProducts.some((addedProduct) => addedProduct.id === product._id);
                                 return (
                                     <tr key={product._id} className="bg-white border-t hover:bg-gray-50">
+                                        <td className="p-4 whitespace-nowrap text-sm">{index + 1}</td>
                                         <td className="p-4 whitespace-nowrap text-sm">{product.name}</td>
                                         <td className="p-4 whitespace-nowrap md:sticky">{formatCurrencyVND(product.price)}</td>
                                         <td className="p-4 whitespace-nowrap text-sm">{product.quantity}</td>

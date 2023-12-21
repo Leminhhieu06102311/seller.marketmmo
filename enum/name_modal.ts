@@ -4,3 +4,8 @@ export enum ENUM_NAME_MODAL {
     LISTPRODUCT_MODAL = "LISTPRODUCT_MODAL",
     LISTPROMOTION_MODAL = "LISTPROMOTION_MODAL"
   }
+
+  export const setSelectedVoucherType = (voucherType: string) => ({
+    type: 'SET_SELECTED_VOUCHER_TYPE',
+    payload: voucherType,
+  });
